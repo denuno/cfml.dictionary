@@ -1,4 +1,4 @@
-package org.cfeclipse.cfml.dictionary;
+package cfml.dictionary;
 
 import java.util.HashMap;
 import java.util.Iterator;

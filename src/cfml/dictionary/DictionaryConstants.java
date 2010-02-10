@@ -1,4 +1,4 @@
-package org.cfeclipse.cfml.dictionary;
+package cfml.dictionary;
 
 public class DictionaryConstants {
 	

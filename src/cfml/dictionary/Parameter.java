@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
  * SOFTWARE.
  */
-package org.cfeclipse.cfml.dictionary;
+package cfml.dictionary;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +64,7 @@ public class Parameter implements Comparable {
 	 * as optional.
 	 * 
 	 * @param newTriggerSet The new trigger to set
-	 * @see #org.cfeclipse.cfml.dictionary.Trigger
+	 * @see #cfml.dictionary.Trigger
 	 */
 	public void addTrigger(Trigger newTriggerSet) {
 		//System.out.println("Parameter::addTriger() - Param \' " + this.name + "\' now has " + this.triggers.size() + "\' triggers");

@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
  * SOFTWARE.
  */
-package org.cfeclipse.cfml.dictionary;
+package cfml.dictionary;
 
 import java.util.Iterator;
 import java.util.LinkedHashSet;

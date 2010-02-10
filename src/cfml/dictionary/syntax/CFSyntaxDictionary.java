@@ -22,13 +22,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
  * SOFTWARE.
  */
-package org.cfeclipse.cfml.dictionary.syntax;
+package cfml.dictionary.syntax;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.cfeclipse.cfml.dictionary.ISyntaxDictionary;
-import org.cfeclipse.cfml.dictionary.SyntaxDictionary;
+import cfml.dictionary.ISyntaxDictionary;
+import cfml.dictionary.SyntaxDictionary;
 
 
 /**

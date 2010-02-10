@@ -5,7 +5,7 @@
  * Do we need to include the MIT License in each .java file?
  * 
  */
-package org.cfeclipse.cfml.dictionary.syntax;
+package cfml.dictionary.syntax;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import org.cfeclipse.cfml.dictionary.ISyntaxDictionary;
+import cfml.dictionary.ISyntaxDictionary;
 
 
 /**

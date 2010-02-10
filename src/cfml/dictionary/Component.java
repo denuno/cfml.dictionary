@@ -1,5 +1,5 @@
 /*
- * Created on Mar 6, 2004
+ * Created on Feb 27, 2004
  *
  * The MIT License
  * Copyright (c) 2004 Rob Rohan
@@ -22,28 +22,65 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
  * SOFTWARE.
  */
-package org.cfeclipse.cfml.dictionary.syntax;
+package cfml.dictionary;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.cfeclipse.cfml.dictionary.ISyntaxDictionary;
-import org.cfeclipse.cfml.dictionary.SyntaxDictionary;
 
 
 /**
- * @author Rob
+ * @author Spike
  *
- * In charge of the HTML dictionary
  */
-public class HTMLSyntaxDictionary extends SyntaxDictionary implements ISyntaxDictionary {
-	
-	/**
-	 * gets any operators (eq, or, and) (lowercase only)
-	 * @param elementname
-	 * @return
-	 */
-	public Set getOperators()
-	{
-		return null;
+public class Component extends Procedure {
+	protected String path = "";
+	protected String framework = "";
+	protected Set methods = null;
+	protected Set scopes = null;
+
+	public Component(String name, String path, String framework, byte creator)
+	{	
+	    super(name);
+	    this.path = path;
+	    this.framework = framework;
+		this.creator = creator;
 	}
+	
+
+	public void addMethod(Function method)
+	{
+		if(methods == null)
+			methods = new LinkedHashSet();
+		
+		methods.add(method);
+	}
+
+	
+
+	public void addScope(String scope)
+	{
+		if(scopes == null)
+			scopes = new LinkedHashSet();
+		
+		scopes.add(scope);
+	}
+	
+	public String toString()
+	{
+		return name;
+	}
+
+	
+	public Set getScopes()
+	{
+		return this.scopes;
+	}
+	
+	public Set getMethods() 
+	{
+	    return this.methods;
+	}
+	
+
+	
 }

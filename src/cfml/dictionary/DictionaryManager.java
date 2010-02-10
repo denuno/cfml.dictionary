@@ -22,7 +22,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
  * SOFTWARE.
  */
-package org.cfeclipse.cfml.dictionary;
+package cfml.dictionary;
  
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -36,10 +36,6 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.cfeclipse.cfml.dictionary.syntax.CFSyntaxDictionary;
-import org.cfeclipse.cfml.dictionary.syntax.HTMLSyntaxDictionary;
-import org.cfeclipse.cfml.dictionary.syntax.SQLSyntaxDictionary;
-import org.cfeclipse.cfml.dictionary.syntax.JSSyntaxDictionary;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -47,6 +43,11 @@ import org.jdom.xpath.XPath;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import cfml.dictionary.syntax.CFSyntaxDictionary;
+import cfml.dictionary.syntax.HTMLSyntaxDictionary;
+import cfml.dictionary.syntax.JSSyntaxDictionary;
+import cfml.dictionary.syntax.SQLSyntaxDictionary;
 
 
 /**
