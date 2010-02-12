@@ -30,21 +30,21 @@ import java.util.Set;
 import cfml.dictionary.ISyntaxDictionary;
 import cfml.dictionary.SyntaxDictionary;
 
-
 /**
  * @author Rob
- *
- * Extension of the SyntaxDictionary. Has cf specific items. This class is not used
- * directly in cfe. There is one more level in the SQLSyntaxDictionary
+ * 
+ *         Extension of the SyntaxDictionary. Has cf specific items. This class
+ *         is not used directly in cfe. There is one more level in the
+ *         SQLSyntaxDictionary
  * 
  * @see SQLSyntaxDictionary
  */
-public class CFSyntaxDictionary extends SyntaxDictionary implements ISyntaxDictionary {
+public class CFSyntaxDictionary extends SyntaxDictionary implements
+		ISyntaxDictionary {
 	protected static Set operators;
 	protected static Set scriptkeywords;
-	
-	public CFSyntaxDictionary()
-	{
+
+	public CFSyntaxDictionary() {
 		super();
 		operators = new HashSet();
 		buildOperatorSyntax();
@@ -52,31 +52,30 @@ public class CFSyntaxDictionary extends SyntaxDictionary implements ISyntaxDicti
 		scriptkeywords = new HashSet();
 		buildScriptKeywordSyntax();
 	}
-	
+
 	/**
 	 * gets any operators (eq, or, and) (lowercase only)
+	 * 
 	 * @param elementname
 	 * @return
 	 */
-	public Set getOperators()
-	{
+	public Set getOperators() {
 		return operators;
 	}
-	
+
 	/**
 	 * gets cfscript specific keywords (if, while, etc);
+	 * 
 	 * @return
 	 */
-	public Set getScriptKeywords()
-	{
+	public Set getScriptKeywords() {
 		return scriptkeywords;
 	}
-	
-	/** 
-	 * build all the cfscript keywords 
+
+	/**
+	 * build all the cfscript keywords
 	 */
-	protected static void buildScriptKeywordSyntax()
-	{
+	protected static void buildScriptKeywordSyntax() {
 		scriptkeywords.add("for");
 		scriptkeywords.add("if");
 		scriptkeywords.add("else");
@@ -97,12 +96,11 @@ public class CFSyntaxDictionary extends SyntaxDictionary implements ISyntaxDicti
 		scriptkeywords.add("to");
 		scriptkeywords.addAll(operators);
 	}
-	
-	/** 
-	 * build all the operators in the language 
+
+	/**
+	 * build all the operators in the language
 	 */
-	protected static void buildOperatorSyntax()
-	{
+	protected static void buildOperatorSyntax() {
 		operators.add("gt");
 		operators.add("lt");
 		operators.add("gte");
@@ -120,10 +118,9 @@ public class CFSyntaxDictionary extends SyntaxDictionary implements ISyntaxDicti
 		operators.add("than");
 		operators.add("less");
 		operators.add("equal");
-		//operators.add("to");
+		// operators.add("to");
 		operators.add("xor");
 		operators.add("eqv");
 		operators.add("imp");
 	}
 }
-

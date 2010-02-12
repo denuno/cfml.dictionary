@@ -29,21 +29,21 @@ import java.util.Set;
 import cfml.dictionary.ISyntaxDictionary;
 import cfml.dictionary.SyntaxDictionary;
 
-
 /**
  * @author Rob
- *
- * In charge of the HTML dictionary
+ * 
+ *         In charge of the HTML dictionary
  */
-public class HTMLSyntaxDictionary extends SyntaxDictionary implements ISyntaxDictionary {
-	
+public class HTMLSyntaxDictionary extends SyntaxDictionary implements
+		ISyntaxDictionary {
+
 	/**
 	 * gets any operators (eq, or, and) (lowercase only)
+	 * 
 	 * @param elementname
 	 * @return
 	 */
-	public Set getOperators()
-	{
+	public Set getOperators() {
 		return null;
 	}
 }
