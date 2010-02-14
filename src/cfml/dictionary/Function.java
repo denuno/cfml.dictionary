@@ -28,115 +28,112 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
- * This is a function. Functions are like tags except they have a return
- * type. A function derives from the Procedure class but as mentioned a 
- * moment ago, it has a return value. 
+ * This is a function. Functions are like tags except they have a return type. A
+ * function derives from the Procedure class but as mentioned a moment ago, it
+ * has a return value.
  * 
  * @author Rob
- *
+ * 
  */
 public class Function extends Procedure {
-	
+
 	/** return type */
 	protected String returns = Procedure.VOID;
-	
+
 	/**
 	 * creates a function with only a name
-	 * @param name the attribute name
+	 * 
+	 * @param name
+	 *            the attribute name
 	 */
-	public Function(String name)
-	{
+	public Function(String name) {
 		super(name);
 	}
-	
-	public Function(String name, byte creator)
-	{
+
+	public Function(String name, byte creator) {
 		super(name);
 		this.creator = creator;
 	}
-	
+
 	/**
-	 * Function needs to override because param order is
-	 * important (makes parameters a LinkedHashSet)
+	 * Function needs to override because param order is important (makes
+	 * parameters a LinkedHashSet)
 	 */
-	public void addParameter(Parameter param)
-	{
-		if(parameters == null)
+	public void addParameter(Parameter param) {
+		if (parameters == null)
 			parameters = new LinkedHashSet();
-		
+
 		parameters.add(param);
 	}
-	
+
 	/**
 	 * creates a function with a name and a type
-	 * @param name the name
-	 * @param type the type typically string numeric or object
+	 * 
+	 * @param name
+	 *            the name
+	 * @param type
+	 *            the type typically string numeric or object
 	 */
-	public Function(String name, String returntype, byte creator)
-	{
-		this(name,creator);
+	public Function(String name, String returntype, byte creator) {
+		this(name, creator);
 		this.returns = returntype;
 	}
-	
+
 	/**
 	 * override toString to auto format the function
 	 */
-	public String toString()
-	{
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		if(this.name != null)
-		{	
-			//to lowercase for the createobject hack
+		if (this.name != null) {
+			// to lowercase for the createobject hack
 			sb.append(this.name + "(");
-			
-			if(parameters != null)
-			{
+
+			if (parameters != null) {
 				Iterator it = parameters.iterator();
-				while(it.hasNext())
-				{
-					Parameter pm = (Parameter)it.next();
-					if(!pm.isRequired()) sb.append("[");
+				while (it.hasNext()) {
+					Parameter pm = (Parameter) it.next();
+					if (!pm.isRequired())
+						sb.append("[");
 					sb.append(pm.getType() + " " + pm.getName());
-					if(!pm.isRequired()) sb.append("]");
+					if (!pm.isRequired())
+						sb.append("]");
 					sb.append(", ");
 				}
-				sb.delete(sb.length()-2,sb.length());
+				sb.delete(sb.length() - 2, sb.length());
 			}
 			sb.append(")");
-			sb.append(" : "+this.returns);
+			sb.append(" : " + this.returns);
 		}
-		
+
 		return sb.toString();
 	}
-	
+
 	/**
 	 * override toString to auto format the function
 	 */
-	public String getInsertion()
-	{
+	public String getInsertion() {
 		StringBuffer sb = new StringBuffer();
-		if(this.name != null)
-		{	
-			//sb.append(this.returns + " ");
-			//to lowercase for the createobject hack
+		if (this.name != null) {
+			// sb.append(this.returns + " ");
+			// to lowercase for the createobject hack
 			sb.append(this.name + "(");
-			
-			if(parameters != null)
-			{
+
+			if (parameters != null) {
 				Iterator it = parameters.iterator();
-				while(it.hasNext())
-				{
-					Parameter pm = (Parameter)it.next();
-					if(!pm.isRequired()) sb.append("[");
+				while (it.hasNext()) {
+					Parameter pm = (Parameter) it.next();
+					if (!pm.isRequired())
+						sb.append("[");
 					sb.append(pm.getType() + " " + pm.getName());
-					if(!pm.isRequired()) sb.append("]");
+					if (!pm.isRequired())
+						sb.append("]");
 					sb.append(", ");
 				}
-				sb.delete(sb.length()-2,sb.length());
+				sb.delete(sb.length() - 2, sb.length());
 			}
 			sb.append(")");
 		}
-		
+
 		return sb.toString();
 	}
 }

@@ -30,77 +30,86 @@ import java.util.Set;
 import cfml.dictionary.ISyntaxDictionary;
 import cfml.dictionary.SyntaxDictionary;
 
-
 /**
  * @author Rob
- *
- * This is the javascript specific syntax dictionary dictionary
+ * 
+ *         This is the javascript specific syntax dictionary dictionary
  */
-public class JSSyntaxDictionary extends SyntaxDictionary implements ISyntaxDictionary {
-	//protected static Map functions;
+public class JSSyntaxDictionary extends SyntaxDictionary implements
+		ISyntaxDictionary {
+	// protected static Map functions;
 	protected static Set operators;
 	protected static Set scriptkeywords;
-	
-	public JSSyntaxDictionary()
-	{
+
+	public JSSyntaxDictionary() {
 		super();
 		buildFunctionSyntax();
-		
+
 		operators = new HashSet();
 		buildOperatorSyntax();
-		
+
 		scriptkeywords = new HashSet();
 		buildScriptKeywordSyntax();
 	}
-	
+
 	/**
 	 * gets any operators (lowercase only)
+	 * 
 	 * @param elementname
 	 * @return
 	 */
-	public Set getOperators()
-	{
+	public Set getOperators() {
 		return operators;
 	}
-	
+
 	/**
 	 * gets cfscript specific keywords (if, while, etc);
+	 * 
 	 * @return
 	 */
-	public Set getScriptKeywords()
-	{
+	public Set getScriptKeywords() {
 		return scriptkeywords;
 	}
-	
+
 	/**
 	 * gets all the functions (lowercase only)
+	 * 
 	 * @param elementname
 	 * @return
 	 */
-	public Set getFunctions()
-	{
+	public Set getFunctions() {
 		return functions.keySet();
 	}
-	
+
 	/**
 	 * retuns a functions usage
+	 * 
 	 * @param functionname
 	 * @return
 	 */
-	public String getFunctionUsage(String functionname)
-	{
-		return (String)functions.get(functionname.toLowerCase());
+	public String getFunctionUsage(String functionname) {
+		return (String) functions.get(functionname.toLowerCase());
 	}
-	
-	public Set getAllElements(){ return null;}
-	public Set getElementAttributes(String ele){ return null; }
-	public Set getFilteredAttributes(String x, String y){ return null; }
-	public Set getFilteredElements(String ele){ return null; }
-	
-	///////////////////////////////////////////////////////////////////////////
+
+	public Set getAllElements() {
+		return null;
+	}
+
+	public Set getElementAttributes(String ele) {
+		return null;
+	}
+
+	public Set getFilteredAttributes(String x, String y) {
+		return null;
+	}
+
+	public Set getFilteredElements(String ele) {
+		return null;
+	}
+
+	// /////////////////////////////////////////////////////////////////////////
 	/** build all the cfscript keywords */
-	protected static void buildScriptKeywordSyntax()
-	{
+	protected static void buildScriptKeywordSyntax() {
 		scriptkeywords.add("for");
 		scriptkeywords.add("if");
 		scriptkeywords.add("else");
@@ -147,17 +156,16 @@ public class JSSyntaxDictionary extends SyntaxDictionary implements ISyntaxDicti
 		scriptkeywords.add("public");
 		scriptkeywords.add("import");
 		scriptkeywords.add("val");
-		//scriptkeywords.add("in");
+		// scriptkeywords.add("in");
 		scriptkeywords.add("short");
 		scriptkeywords.add("double");
 		scriptkeywords.add("instanceof");
 		scriptkeywords.add("static");
 		scriptkeywords.add("with");
 	}
-	
+
 	/** build all the operators in the language */
-	protected static void buildOperatorSyntax()
-	{
+	protected static void buildOperatorSyntax() {
 		operators.add("+");
 		operators.add("-");
 		operators.add("*");
@@ -187,24 +195,25 @@ public class JSSyntaxDictionary extends SyntaxDictionary implements ISyntaxDicti
 		operators.add("<<");
 		operators.add(">>");
 	}
-	
+
 	/** build all the functions in the language */
-	protected void buildFunctionSyntax()
-	{
-		//these are only top level functions -- could do more I guess
-		//but that could get hairy
-		/* functions.put("escape","String Escape(String)");
-		functions.put("eval","Object Eval(codeString)");
-		functions.put("isFinite","boolean isFinite(testnumber)");
-		functions.put("isNaN","boolean isNaN(testvalue)");
-		functions.put("number","number Number(Object)");
-		functions.put("parseFloat","float parseFloat(String)");
-		functions.put("parseInt","int parseInt(String, radix) || int parseInt(String)");
-		functions.put("string","boolean String(Object)");
-		functions.put("unescape","String Unescape(encodedString)");
-		
-		functions.put("alert","void alert(String)");
-		functions.put("confirm","boolean confirm(String)");
-		*/
+	protected void buildFunctionSyntax() {
+		// these are only top level functions -- could do more I guess
+		// but that could get hairy
+		/*
+		 * functions.put("escape","String Escape(String)");
+		 * functions.put("eval","Object Eval(codeString)");
+		 * functions.put("isFinite","boolean isFinite(testnumber)");
+		 * functions.put("isNaN","boolean isNaN(testvalue)");
+		 * functions.put("number","number Number(Object)");
+		 * functions.put("parseFloat","float parseFloat(String)");
+		 * functions.put(
+		 * "parseInt","int parseInt(String, radix) || int parseInt(String)");
+		 * functions.put("string","boolean String(Object)");
+		 * functions.put("unescape","String Unescape(encodedString)");
+		 * 
+		 * functions.put("alert","void alert(String)");
+		 * functions.put("confirm","boolean confirm(String)");
+		 */
 	}
 }
