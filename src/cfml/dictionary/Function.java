@@ -28,18 +28,17 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 
 /**
- * This is a function. Functions are like tags except they have a return type. A
- * function derives from the Procedure class but as mentioned a moment ago, it
- * has a return value.
+ * This is a function. Functions are like tags except they have a return type. A function derives from the Procedure
+ * class but as mentioned a moment ago, it has a return value.
  * 
  * @author Rob
  * 
  */
 public class Function extends Procedure {
-
+	
 	/** return type */
 	protected String returns = Procedure.VOID;
-
+	
 	/**
 	 * creates a function with only a name
 	 * 
@@ -49,23 +48,22 @@ public class Function extends Procedure {
 	public Function(String name) {
 		super(name);
 	}
-
+	
 	public Function(String name, byte creator) {
 		super(name);
 		this.creator = creator;
 	}
-
+	
 	/**
-	 * Function needs to override because param order is important (makes
-	 * parameters a LinkedHashSet)
+	 * Function needs to override because param order is important (makes parameters a LinkedHashSet)
 	 */
 	public void addParameter(Parameter param) {
 		if (parameters == null)
 			parameters = new LinkedHashSet();
-
+		
 		parameters.add(param);
 	}
-
+	
 	/**
 	 * creates a function with a name and a type
 	 * 
@@ -78,7 +76,7 @@ public class Function extends Procedure {
 		this(name, creator);
 		this.returns = returntype;
 	}
-
+	
 	/**
 	 * override toString to auto format the function
 	 */
@@ -87,7 +85,7 @@ public class Function extends Procedure {
 		if (this.name != null) {
 			// to lowercase for the createobject hack
 			sb.append(this.name + "(");
-
+			
 			if (parameters != null) {
 				Iterator it = parameters.iterator();
 				while (it.hasNext()) {
@@ -104,10 +102,10 @@ public class Function extends Procedure {
 			sb.append(")");
 			sb.append(" : " + this.returns);
 		}
-
+		
 		return sb.toString();
 	}
-
+	
 	/**
 	 * override toString to auto format the function
 	 */
@@ -117,7 +115,7 @@ public class Function extends Procedure {
 			// sb.append(this.returns + " ");
 			// to lowercase for the createobject hack
 			sb.append(this.name + "(");
-
+			
 			if (parameters != null) {
 				Iterator it = parameters.iterator();
 				while (it.hasNext()) {
@@ -133,7 +131,7 @@ public class Function extends Procedure {
 			}
 			sb.append(")");
 		}
-
+		
 		return sb.toString();
 	}
 }

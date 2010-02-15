@@ -27,18 +27,17 @@ package cfml.dictionary;
 /**
  * @author Rob
  * 
- *         This is really just a string wrapper. Its a possible value for an
- *         attribute its only here to abstract it a bit and to give some room to
- *         play for future additions
+ *         This is really just a string wrapper. Its a possible value for an attribute its only here to abstract it a
+ *         bit and to give some room to play for future additions
  */
 public class Value implements Comparable {
 	protected String value;
 	protected String help;
-
+	
 	public Value(String val) {
 		value = val;
 	}
-
+	
 	/**
 	 * gets this values value
 	 * 
@@ -47,23 +46,23 @@ public class Value implements Comparable {
 	public String getValue() {
 		return value;
 	}
-
+	
 	public void setValue(String newValue) {
 		value = newValue;
 	}
-
+	
 	public String getHelp() {
 		return help;
 	}
-
+	
 	public void setHelp(String help) {
 		this.help = help;
 	}
-
+	
 	public String toString() {
 		return value;
 	}
-
+	
 	/**
 	 * Checks to see if the passed object is equal to this value
 	 */
@@ -75,23 +74,22 @@ public class Value implements Comparable {
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
+	
 	/**
 	 * Compares the passed object to this value
 	 */
 	public int compareTo(Object o) {
 		if (o == null)
-			throw new NullPointerException(
-					"Object o that I am comparing with is null!");
-
+			throw new NullPointerException("Object o that I am comparing with is null!");
+		
 		if (o instanceof Value) {
 			return value.compareTo(((Value) o).getValue());
 		}
-
+		
 		return 0;
 	}
-
+	
 }

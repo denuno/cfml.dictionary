@@ -36,38 +36,38 @@ public class Component extends Procedure {
 	protected String framework = "";
 	protected Set methods = null;
 	protected Set scopes = null;
-
+	
 	public Component(String name, String path, String framework, byte creator) {
 		super(name);
 		this.path = path;
 		this.framework = framework;
 		this.creator = creator;
 	}
-
+	
 	public void addMethod(Function method) {
 		if (methods == null)
 			methods = new LinkedHashSet();
-
+		
 		methods.add(method);
 	}
-
+	
 	public void addScope(String scope) {
 		if (scopes == null)
 			scopes = new LinkedHashSet();
-
+		
 		scopes.add(scope);
 	}
-
+	
 	public String toString() {
 		return name;
 	}
-
+	
 	public Set getScopes() {
 		return this.scopes;
 	}
-
+	
 	public Set getMethods() {
 		return this.methods;
 	}
-
+	
 }

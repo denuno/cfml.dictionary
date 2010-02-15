@@ -34,32 +34,31 @@ import org.xml.sax.SAXException;
 /**
  * @author Rob
  * 
- *         Handles the Sax events against a dictionary. This was ripped from
- *         Treebeard with permission
+ *         Handles the Sax events against a dictionary. This was ripped from Treebeard with permission
  */
 public class DictionaryContentHandler implements ContentHandler {
 	// keep track of the location
 	// private Locator locator;
 	// private Map namespaceMappings;
-
+	
 	private Map dtags;
 	private Map dfunctions;
 	private Map dscopeVars;
-
+	
 	/** used to mark which part of the xml doc we are in */
 	private String currenttag = "";
 	/** current tag/function being built */
 	private Procedure currentitem = null;
 	private Parameter paramItem = null;
 	private Function methoditem = null;
-
+	
 	public DictionaryContentHandler(Map tags, Map functions, Map scopeVars) {
 		dtags = tags;
 		dfunctions = functions;
 		dscopeVars = scopeVars;
 		// namespaceMappings = new java.util.HashMap();
 	}
-
+	
 	/**
 	 * sets the documnet locator
 	 * 
@@ -69,7 +68,7 @@ public class DictionaryContentHandler implements ContentHandler {
 	public void setDocumentLocator(Locator locator) {
 		// this.locator = locator;
 	}
-
+	
 	/**
 	 * guesses if the passed string is "true" or "false"
 	 * 
@@ -81,28 +80,26 @@ public class DictionaryContentHandler implements ContentHandler {
 		if (bstring.equalsIgnoreCase("true") || bstring.equalsIgnoreCase("yes")) {
 			return true;
 		}
-
+		
 		return false;
 	}
-
+	
 	private boolean inTriggerBlock = false;
-
+	
 	/**
-	 * Handles the start of a triggers tag. At present it just records the fact
-	 * that we are in a triggers block so that any trigger set exists only in
-	 * triggers blocks.
+	 * Handles the start of a triggers tag. At present it just records the fact that we are in a triggers block so that
+	 * any trigger set exists only in triggers blocks.
 	 * 
 	 * @param attribs
 	 *            XML tag attributes
 	 */
 	private void handleTriggersStart(Attributes attribs) {
 		if (this.paramItem == null) {
-			System.err
-					.println("Got a <triggers> block outside of a parameter!");
+			System.err.println("Got a <triggers> block outside of a parameter!");
 		} else
 			this.inTriggerBlock = true;
 	}
-
+	
 	/**
 	 * Handles a closing triggers tag.
 	 * 
@@ -112,45 +109,41 @@ public class DictionaryContentHandler implements ContentHandler {
 	private void handleTriggersEnd() {
 		this.inTriggerBlock = false;
 	}
-
+	
 	/**
-	 * Handles a selectedValue tag. Adds the trigger details to the currently
-	 * open parameter (if no parameter open or the selectedValue tag is not in a
-	 * parameter then an error will be reported)
+	 * Handles a selectedValue tag. Adds the trigger details to the currently open parameter (if no parameter open or
+	 * the selectedValue tag is not in a parameter then an error will be reported)
 	 * 
 	 * @param attributes
 	 *            Attributes for the xml
 	 */
 	private void handleSelectedValue(org.xml.sax.Attributes attributes) {
 		if (!this.inTriggerBlock) {
-			System.err
-					.println("Got a <selectedValue> outside of a valid triggers block!");
+			System.err.println("Got a <selectedValue> outside of a valid triggers block!");
 			return;
 		}
-
+		
 		String attrName = attributes.getValue("attributeName");
 		String value = attributes.getValue("value");
-		boolean required = attributes.getValue("required").compareToIgnoreCase(
-				"true") == 0;
+		boolean required = attributes.getValue("required").compareToIgnoreCase("true") == 0;
 		String indexVal = attributes.getValue("index");
 		int index = -1;
 		if (indexVal != null) {
 			index = Integer.parseInt(indexVal);
 		}
-		this.paramItem.addTrigger(Trigger.CreateSimpleTrigger(attrName, value,
-				required, index));
-
+		this.paramItem.addTrigger(Trigger.CreateSimpleTrigger(attrName, value, required, index));
+		
 		// System.out.println("DictionaryContentHandler::handleSelectedVaule - Attr: \'"
 		// + this.paramItem.getName() + "\' + Added trigger for \'" + attrName +
 		// "\'=\'" + value + "\'");
 	}
-
+	
 	/** process a start element */
-	public void startElement(String namespace, String localName, String str2,
-			org.xml.sax.Attributes attributes) throws SAXException {
+	public void startElement(String namespace, String localName, String str2, org.xml.sax.Attributes attributes)
+			throws SAXException {
 		// save the current tag so we can see where we were
 		this.currenttag = str2.toLowerCase();
-
+		
 		if (str2.equals("tag")) {
 			handleTagStart(attributes);
 		} else if (str2.equals("function")) {
@@ -170,9 +163,9 @@ public class DictionaryContentHandler implements ContentHandler {
 		} else if (str2.equals("selectedValue")) {
 			handleSelectedValue(attributes);
 		}
-
+		
 	}
-
+	
 	private void handleTagStart(org.xml.sax.Attributes attributes) {
 		// all the attribtues we are going to need to make a tag
 		byte creator = 0;
@@ -181,7 +174,7 @@ public class DictionaryContentHandler implements ContentHandler {
 		boolean xmlstyle = false;
 		boolean hybrid = false;
 		boolean anyAttribute = false;
-
+		
 		// get all the attributes needed for the tag
 		for (int x = 0; x < attributes.getLength(); x++) {
 			String attrname = attributes.getQName(x).toLowerCase();
@@ -199,20 +192,19 @@ public class DictionaryContentHandler implements ContentHandler {
 				anyAttribute = parseBoolean(attributes.getValue(x));
 			}
 		}
-
+		
 		// System.out.println("Tag: " + creator + " " + name + " " + single +
 		// " " + xmlstyle);
 		// create a new tag
-		this.currentitem = new Tag(name, single, xmlstyle, creator, hybrid,
-				anyAttribute);
+		this.currentitem = new Tag(name, single, xmlstyle, creator, hybrid, anyAttribute);
 	}
-
+	
 	private void handleFunctionStart(org.xml.sax.Attributes attributes) {
 		// create a new function
 		byte creator = 0;
 		String name = "";
 		String returns = "";
-
+		
 		// get all the attributes needed for the tag
 		for (int x = 0; x < attributes.getLength(); x++) {
 			String attrname = attributes.getQName(x).toLowerCase();
@@ -232,7 +224,7 @@ public class DictionaryContentHandler implements ContentHandler {
 			this.currentitem = new Function(name, returns, creator);
 		}
 	}
-
+	
 	/**
 	 * Handles a new parameter. Not added until the closing tag is found.
 	 * 
@@ -246,7 +238,7 @@ public class DictionaryContentHandler implements ContentHandler {
 		boolean required = false;
 		String defaultValue = null;
 		String category = "General";
-
+		
 		for (int x = 0; x < attributes.getLength(); x++) {
 			String attrname = attributes.getQName(x).toLowerCase();
 			if (attrname.equals("type")) {
@@ -261,35 +253,33 @@ public class DictionaryContentHandler implements ContentHandler {
 				category = attributes.getValue(x);
 			}
 		}
-
+		
 		// System.out.println("Param: " + name + " " + type + " " + required);
-
+		
 		// Create a new parameter and store it as the current parameter
-		this.paramItem = new Parameter(name, type, required, defaultValue,
-				category);
+		this.paramItem = new Parameter(name, type, required, defaultValue, category);
 	}
-
+	
 	/**
-	 * Handles a closing parameter tag. Performs whatever finishing up is
-	 * required and stores the parameter for it's associated method/tag.
+	 * Handles a closing parameter tag. Performs whatever finishing up is required and stores the parameter for it's
+	 * associated method/tag.
 	 */
 	private void handleParameterEnd() {
 		//
 		// Attach the finished parameter to the current item
-		if ((currentitem instanceof Function || currentitem instanceof Tag)
-				&& paramItem != null) {
+		if ((currentitem instanceof Function || currentitem instanceof Tag) && paramItem != null) {
 			currentitem.addParameter(paramItem);
 		} // TODO: Isn't the below in the wrong place, should it be a child of
-			// the above if?
+		// the above if?
 		else if (methoditem != null && paramItem != null) {
 			methoditem.addParameter(paramItem);
 		}
-
+		
 		//
 		// Reset the paramitem
 		paramItem = null;
 	}
-
+	
 	/**
 	 * Handles the open tag for a value.
 	 * 
@@ -301,25 +291,24 @@ public class DictionaryContentHandler implements ContentHandler {
 		//
 		// Create a new value and assign it to the current parameter
 		String option = attributes.getValue(0);
-
+		
 		if (option != null && paramItem != null) {
 			// If this is an option for a function and it is supposed to be a
 			// string add the quotes
 			// But, don't want to add the quotes if it is is a function call
-			if (currentitem instanceof Function
-					&& paramItem.getType().equals("string")
+			if (currentitem instanceof Function && paramItem.getType().equals("string")
 					&& !option.matches("[a-zA-Z0-9]*\\(.*\\)")) {
 				option = "'" + option + "'";
 			}
-
+			
 			paramItem.addValue(new Value(option));
 		}
 	}
-
+	
 	private void handleValueEnd() {
-
+		
 	}
-
+	
 	private void handleComponentStart(org.xml.sax.Attributes attributes) {
 		// all the attribtues we are going to need to make a tag
 		byte creator = 0;
@@ -327,7 +316,7 @@ public class DictionaryContentHandler implements ContentHandler {
 		String name = "";
 		String framework = "";
 		;
-
+		
 		// get all the attributes needed for the tag
 		for (int x = 0; x < attributes.getLength(); x++) {
 			String attrname = attributes.getQName(x).toLowerCase();
@@ -341,13 +330,13 @@ public class DictionaryContentHandler implements ContentHandler {
 				framework = attributes.getValue(x);
 			}
 		}
-
+		
 		// System.out.println("Tag: " + creator + " " + name + " " + single +
 		// " " + xmlstyle);
 		// create a new tag
 		this.currentitem = new Component(name, path, framework, creator);
 	}
-
+	
 	private void handleScopeStart(org.xml.sax.Attributes attributes) {
 		// create a new value and assign it to the current parameter
 		String scope = attributes.getValue(0);
@@ -359,10 +348,9 @@ public class DictionaryContentHandler implements ContentHandler {
 			dscopeVars.put(scope, new ScopeVar(scope));
 		}
 	}
-
+	
 	/** process an end element */
-	public void endElement(String str, String str1, String str2)
-			throws SAXException {
+	public void endElement(String str, String str1, String str2) throws SAXException {
 		str2 = str2.toLowerCase();
 		if (str2.equals("tag")) {
 			// add the current item to the tag map
@@ -387,7 +375,7 @@ public class DictionaryContentHandler implements ContentHandler {
 			if (this.currentitem instanceof Component) {
 				this.currentitem = null;
 			}
-
+			
 		} else if (str2.equals("scope")) {
 			// Do nothing.
 		} else if (str2.equals("triggers")) {
@@ -395,29 +383,28 @@ public class DictionaryContentHandler implements ContentHandler {
 		}
 		currenttag = "";
 	}
-
+	
 	/** process the start prefix */
 	public void startPrefixMapping(String str, String str1) throws SAXException {
 		// save the mappings for later use
 		// namespaceMappings.put(str1,str);
 	}
-
+	
 	/** process the end prefix */
 	public void endPrefixMapping(String str) throws SAXException {
 		;
 	}
-
+	
 	/** process characters */
-	public void characters(char[] values, int start, int length)
-			throws SAXException {
-
+	public void characters(char[] values, int start, int length) throws SAXException {
+		
 		if (currenttag.equalsIgnoreCase("help")) {
 			StringBuffer resvalue = new StringBuffer();
-
+			
 			for (int x = start; x < (start + length); x++) {
 				resvalue.append(values[x]);
 			}
-
+			
 			// if the current item is not null and the prams are its help for
 			// the
 			// current item
@@ -427,8 +414,7 @@ public class DictionaryContentHandler implements ContentHandler {
 				// load the help right... this slows it down a bit
 				// TODO figure out whats up
 				if (resvalue.toString().trim().length() > 0) {
-					currentitem.setHelp(currentitem.getHelp() + " "
-							+ resvalue.toString().trim().replace('\t', ' ')
+					currentitem.setHelp(currentitem.getHelp() + " " + resvalue.toString().trim().replace('\t', ' ')
 							+ "\n");
 				}
 			}
@@ -437,34 +423,30 @@ public class DictionaryContentHandler implements ContentHandler {
 				// TODO here too
 				// paramitem.setHelp(resvalue.toString().trim().replace('\t',' '));
 				if (resvalue.toString().trim().length() > 0) {
-					paramItem.setHelp(paramItem.getHelp() + " "
-							+ resvalue.toString().trim().replace('\t', ' ')
-							+ "\n");
+					paramItem.setHelp(paramItem.getHelp() + " " + resvalue.toString().trim().replace('\t', ' ') + "\n");
 				}
 			}
 		}
 	}
-
+	
 	/** process the end of the document */
 	public void endDocument() throws SAXException {
 		;
 	}
-
-	public void ignorableWhitespace(char[] values, int param, int param2)
-			throws SAXException {
+	
+	public void ignorableWhitespace(char[] values, int param, int param2) throws SAXException {
 		;
 	}
-
+	
 	/** process the processing instructions */
-	public void processingInstruction(String str, String str1)
-			throws SAXException {
+	public void processingInstruction(String str, String str1) throws SAXException {
 		;
 	}
-
+	
 	public void skippedEntity(String str) throws SAXException {
 		;
 	}
-
+	
 	/** process the start of the documnet */
 	public void startDocument() throws SAXException {
 		;
