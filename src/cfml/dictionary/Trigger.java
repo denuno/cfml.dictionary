@@ -6,10 +6,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Trigger - represents the attribute conditions required to trigger (allow) an
- * attribute to be available. For example, on the tag <cffile> the parameter
- * 'source' is available when the 'append' attribute is set to either: copy,move
- * or rename.
+ * Trigger - represents the attribute conditions required to trigger (allow) an attribute to be available. For example,
+ * on the tag <cffile> the parameter 'source' is available when the 'append' attribute is set to either: copy,move or
+ * rename.
  * 
  * When that occurs it is not only available, but required as well.
  * 
@@ -20,11 +19,10 @@ public class Trigger {
 	protected HashMap triggerParams = new HashMap();
 	protected boolean isRequired = false;
 	protected int index = -1;
-
+	
 	/**
-	 * Creates a simple, one attribute set trigger. Just used to reduce the
-	 * amount of coding required :) This one sets the parameter trigger required
-	 * value to false.
+	 * Creates a simple, one attribute set trigger. Just used to reduce the amount of coding required :) This one sets
+	 * the parameter trigger required value to false.
 	 * 
 	 * @param paramName
 	 *            Name of the parameter to create the trigger from
@@ -35,9 +33,26 @@ public class Trigger {
 	public static Trigger CreateSimpleTrigger(String paramName, String paramVal) {
 		return CreateSimpleTrigger(paramName, paramVal, false);
 	}
-
+	
 	/**
-	 * Creates a simple, one attribute set trigger. Just used to reduce the
+	 * Creates a simple, one attribute set trigger. Just used to reduce the amount of coding required :)
+	 * 
+	 * @param paramName
+	 *            Name of the parameter to create the trigger from
+	 * @param paramVal
+	 *            The value of said triggered
+	 * @param required
+	 *            Whether this trigger triggered means that the parameter must be used
+	 * @return The newly created trigger
+	 */
+	public static Trigger CreateSimpleTrigger(String paramName, String paramVal, boolean required) {
+		HashMap params = new HashMap();
+		params.put(paramName, paramVal);
+		return new Trigger(params, required);
+	}
+	
+	/**
+	 * Creates a simple, one attribute set trigger with a required value and a positional index. Just used to reduce the
 	 * amount of coding required :)
 	 * 
 	 * @param paramName
@@ -45,53 +60,28 @@ public class Trigger {
 	 * @param paramVal
 	 *            The value of said triggered
 	 * @param required
-	 *            Whether this trigger triggered means that the parameter must
-	 *            be used
-	 * @return The newly created trigger
-	 */
-	public static Trigger CreateSimpleTrigger(String paramName,
-			String paramVal, boolean required) {
-		HashMap params = new HashMap();
-		params.put(paramName, paramVal);
-		return new Trigger(params, required);
-	}
-
-	/**
-	 * Creates a simple, one attribute set trigger with a required value and a
-	 * positional index. Just used to reduce the amount of coding required :)
-	 * 
-	 * @param paramName
-	 *            Name of the parameter to create the trigger from
-	 * @param paramVal
-	 *            The value of said triggered
-	 * @param required
-	 *            Whether this trigger triggered means that the parameter must
-	 *            be used
+	 *            Whether this trigger triggered means that the parameter must be used
 	 * @param index
-	 *            The positional index of this parameter in the tag or function
-	 *            call
+	 *            The positional index of this parameter in the tag or function call
 	 * @return The newly created trigger
 	 */
-	public static Trigger CreateSimpleTrigger(String paramName,
-			String paramVal, boolean required, int index) {
+	public static Trigger CreateSimpleTrigger(String paramName, String paramVal, boolean required, int index) {
 		HashMap params = new HashMap();
 		params.put(paramName, paramVal);
 		return new Trigger(params, required, index);
 	}
-
+	
 	/**
-	 * Constructor with only the parameters required for the trigger. By default
-	 * this trigger will be optional
+	 * Constructor with only the parameters required for the trigger. By default this trigger will be optional
 	 * 
 	 * @param newParams
 	 */
 	Trigger(HashMap newParams) {
 		triggerParams = newParams;
 	}
-
+	
 	/**
-	 * Constructor with the parameters required and whether the trigger is
-	 * required.
+	 * Constructor with the parameters required and whether the trigger is required.
 	 * 
 	 * @param newParams
 	 * @param required
@@ -100,10 +90,10 @@ public class Trigger {
 		isRequired = required;
 		triggerParams = newParams;
 	}
-
+	
 	/**
-	 * Constructor with the parameters required, whether the trigger is required
-	 * and the positional index of the parameter for this trigger.
+	 * Constructor with the parameters required, whether the trigger is required and the positional index of the
+	 * parameter for this trigger.
 	 * 
 	 * @param newParams
 	 * @param required
@@ -114,10 +104,9 @@ public class Trigger {
 		this.index = index;
 		triggerParams = newParams;
 	}
-
+	
 	/**
-	 * Compares two maps. Looks like AbstractMap::equals() doesn't work
-	 * correctly!
+	 * Compares two maps. Looks like AbstractMap::equals() doesn't work correctly!
 	 * 
 	 * @param m1
 	 *            First map to check
@@ -127,11 +116,11 @@ public class Trigger {
 	 */
 	private boolean mapsEqual(Map m1, Map m2) {
 		// boolean retVal = false;
-
+		
 		if (!m1.keySet().equals(m2.keySet())) {
 			return false;
 		}
-
+		
 		Iterator m1Iter = m1.keySet().iterator();
 		while (m1Iter.hasNext()) {
 			Object key = m1Iter.next();
@@ -139,33 +128,31 @@ public class Trigger {
 				return false;
 			if (m2.get(key) == null)
 				return false;
-
+			
 			if (!m1.get(key).equals(m2.get(key))) {
 				return false;
 			}
 		}
-
+		
 		return true;
 	}
-
+	
 	/**
 	 * Returns whether the trigger has, um, triggered or not.
 	 * 
 	 * @param params
 	 *            The attributes/parameters currently set.
-	 * @return PARAM_TRIGGERD | PARAM_REQUIRED (triggered & required)
-	 *         PARAM_TRIGGERED (simply triggered, therefore optional)
-	 *         PARAM_NOTTRIGGERED (not triggered, technically optional)
+	 * @return PARAM_TRIGGERD | PARAM_REQUIRED (triggered & required) PARAM_TRIGGERED (simply triggered, therefore
+	 *         optional) PARAM_NOTTRIGGERED (not triggered, technically optional)
 	 */
 	public int WillTrigger(HashMap params) {
 		// /System.out.print("  Trigger:WillTrigger() - ");
-
+		
 		if (triggerParams.size() == 0) {
 			// System.out.println(" no trigger params, triggered and required");
-			return Parameter.PARAM_TRIGGERED
-					| (isRequired ? Parameter.PARAM_REQUIRED : 0);
+			return Parameter.PARAM_TRIGGERED | (isRequired ? Parameter.PARAM_REQUIRED : 0);
 		}
-
+		
 		if (mapsEqual(this.triggerParams, params)) {
 			if (isRequired) {
 				// System.out.println(" required and triggered");
@@ -175,7 +162,7 @@ public class Trigger {
 				return Parameter.PARAM_TRIGGERED;
 			}
 		}
-
+		
 		Set paramSet = params.keySet();
 		Iterator i = paramSet.iterator();
 		while (i.hasNext()) {
@@ -187,8 +174,7 @@ public class Trigger {
 			// System.out.println(key.toString() + ":" + value);
 			// System.out.println("Trigger");
 			// System.out.println(this.toString());
-			if (this.triggerParams.toString().equalsIgnoreCase(
-					thisParam.toString())) {
+			if (this.triggerParams.toString().equalsIgnoreCase(thisParam.toString())) {
 				if (this.isRequired) {
 					return Parameter.PARAM_TRIGGERED | Parameter.PARAM_REQUIRED;
 				} else {
@@ -196,22 +182,22 @@ public class Trigger {
 				}
 			}
 		}
-
+		
 		return Parameter.PARAM_NOTTRIGGERED;
 	}
-
+	
 	public String toString() {
-
+		
 		return this.triggerParams.toString();
-
+		
 	}
-
+	
 	/**
 	 * Returns the parmeter index for this trigger.
 	 * 
 	 * @return
 	 */
-
+	
 	public int paramIndex() {
 		return this.index;
 	}

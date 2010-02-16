@@ -34,9 +34,8 @@ import cfml.dictionary.SyntaxDictionary;
  * 
  *         In charge of the HTML dictionary
  */
-public class HTMLSyntaxDictionary extends SyntaxDictionary implements
-		ISyntaxDictionary {
-
+public class HTMLSyntaxDictionary extends SyntaxDictionary implements ISyntaxDictionary {
+	
 	/**
 	 * gets any operators (eq, or, and) (lowercase only)
 	 * 

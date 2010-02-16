@@ -33,26 +33,24 @@ import cfml.dictionary.SyntaxDictionary;
 /**
  * @author Rob
  * 
- *         Extension of the SyntaxDictionary. Has cf specific items. This class
- *         is not used directly in cfe. There is one more level in the
- *         SQLSyntaxDictionary
+ *         Extension of the SyntaxDictionary. Has cf specific items. This class is not used directly in cfe. There is
+ *         one more level in the SQLSyntaxDictionary
  * 
  * @see SQLSyntaxDictionary
  */
-public class CFSyntaxDictionary extends SyntaxDictionary implements
-		ISyntaxDictionary {
+public class CFSyntaxDictionary extends SyntaxDictionary implements ISyntaxDictionary {
 	protected static Set operators;
 	protected static Set scriptkeywords;
-
+	
 	public CFSyntaxDictionary() {
 		super();
 		operators = new HashSet();
 		buildOperatorSyntax();
-
+		
 		scriptkeywords = new HashSet();
 		buildScriptKeywordSyntax();
 	}
-
+	
 	/**
 	 * gets any operators (eq, or, and) (lowercase only)
 	 * 
@@ -62,7 +60,7 @@ public class CFSyntaxDictionary extends SyntaxDictionary implements
 	public Set getOperators() {
 		return operators;
 	}
-
+	
 	/**
 	 * gets cfscript specific keywords (if, while, etc);
 	 * 
@@ -71,7 +69,7 @@ public class CFSyntaxDictionary extends SyntaxDictionary implements
 	public Set getScriptKeywords() {
 		return scriptkeywords;
 	}
-
+	
 	/**
 	 * build all the cfscript keywords
 	 */
@@ -96,7 +94,7 @@ public class CFSyntaxDictionary extends SyntaxDictionary implements
 		scriptkeywords.add("to");
 		scriptkeywords.addAll(operators);
 	}
-
+	
 	/**
 	 * build all the operators in the language
 	 */

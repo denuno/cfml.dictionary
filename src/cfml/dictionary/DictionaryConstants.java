@@ -13,7 +13,7 @@ public class DictionaryConstants {
 	public static final String P_CFML_DICTIONARY_DEFAULT = "cf9";
 
 	/** the coldfusion dictionaries folder */
-	public static final String DICTIONARY_DIR = "jar:file:/Users/denny/Documents/workspace-cfe-trunk/cfml.dictionary/dictionaries.jar!/dictionary";
+	public static final String DICTIONARY_DIR = "jar:file:/Users/denny/Documents/workspace-cfe-trunk/cfml.dictionary/dictionaries.jar!dictionary";
 	/** the coldfusion dictionary */
 	public static final String CFDIC = "CF_DICTIONARY";
 	/** the javascript dictionary */

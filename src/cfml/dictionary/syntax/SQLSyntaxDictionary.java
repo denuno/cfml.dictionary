@@ -55,7 +55,7 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
 	public Set getSQLKeywords() {
 		return sqlkeywords;
 	}
-
+ 
 	/**
 	 * load SQL keywords from the specified file; relative to dictionaryBaseURL
 	 * 

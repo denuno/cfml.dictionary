@@ -26,14 +26,12 @@ package cfml.dictionary;
 
 /**
  * <p>
- * This class represents a syntax dictionary tag (should probably be renamed to
- * DictionaryTag or something similar). Like Function it inherits from Procedure
- * as a Tag is really a Procedure - it takes parameters and returns no value.
+ * This class represents a syntax dictionary tag (should probably be renamed to DictionaryTag or something similar).
+ * Like Function it inherits from Procedure as a Tag is really a Procedure - it takes parameters and returns no value.
  * Bear that in mind :)
  * </p>
  * <p>
- * A tag has a number of states with regards to it's HTML/XML compatibility. For
- * example:
+ * A tag has a number of states with regards to it's HTML/XML compatibility. For example:
  * </p>
  * <ul>
  * <li>Single: The tag is something like a &lt;cfbreak&gt;</li>
@@ -54,15 +52,14 @@ public class Tag extends Procedure {
 	protected boolean hybrid = false;
 	/** Can this tag take any attribute like a &lt;cfif&gt; */
 	protected boolean anyAttribute = false;
-
+	
 	/** w3c form tag */
 	public static final byte FORM = 16;
 	/** w3c table tag */
 	public static final byte TABLE = 32;
-
+	
 	/**
-	 * Constructs a new Tag with the specified name and whether or not it is a
-	 * single tag or not (i.e. &lt;cfbreak&gt;).
+	 * Constructs a new Tag with the specified name and whether or not it is a single tag or not (i.e. &lt;cfbreak&gt;).
 	 * 
 	 * @param name
 	 *            The name of the tag
@@ -73,11 +70,10 @@ public class Tag extends Procedure {
 		super(name);
 		this.single = single;
 	}
-
+	
 	/**
-	 * Creates a tag with a series of tag-based info. The name, whether or not
-	 * the tag is single or not, the style (is it xmlstyle or not) and it's
-	 * creator (see syntax dictionaries for more info).
+	 * Creates a tag with a series of tag-based info. The name, whether or not the tag is single or not, the style (is
+	 * it xmlstyle or not) and it's creator (see syntax dictionaries for more info).
 	 * 
 	 * @param name
 	 *            The name of the tag
@@ -93,13 +89,11 @@ public class Tag extends Procedure {
 		this.creator = creator;
 		xmlstyle = style;
 	}
-
+	
 	/**
-	 * Creates a tag with a series of tag-based info. The name, whether or not
-	 * the tag is single or not, the style (is it xmlstyle or not) and it's
-	 * creator (see syntax dictionaries for more info). Additionally it takes
-	 * whether or not the tag is a hybrid (???) and whether it can take any
-	 * attribute (ala &lt;cfif&gt;).
+	 * Creates a tag with a series of tag-based info. The name, whether or not the tag is single or not, the style (is
+	 * it xmlstyle or not) and it's creator (see syntax dictionaries for more info). Additionally it takes whether or
+	 * not the tag is a hybrid (???) and whether it can take any attribute (ala &lt;cfif&gt;).
 	 * 
 	 * @param name
 	 *            The name of the tag
@@ -114,15 +108,14 @@ public class Tag extends Procedure {
 	 * @param anyAttribute
 	 *            Can the tag take any attribute
 	 */
-	public Tag(String name, boolean single, boolean style, byte creator,
-			boolean hybrid, boolean anyAttribute) {
+	public Tag(String name, boolean single, boolean style, byte creator, boolean hybrid, boolean anyAttribute) {
 		this(name, single);
 		this.creator = creator;
 		xmlstyle = style;
 		this.hybrid = hybrid;
 		this.anyAttribute = anyAttribute;
 	}
-
+	
 	/**
 	 * returns true if this is a table tag
 	 * 
@@ -134,7 +127,7 @@ public class Tag extends Procedure {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * returns true if this is a form tag
 	 * 
@@ -146,7 +139,7 @@ public class Tag extends Procedure {
 		}
 		return false;
 	}
-
+	
 	/**
 	 * Is this tag a sinlge tag or does it have a closing counter part?
 	 * 
@@ -155,48 +148,45 @@ public class Tag extends Procedure {
 	public boolean isSingle() {
 		return single;
 	}
-
+	
 	/**
-	 * Is this tag in xml style (mostly used with is single to tell if the tag
-	 * shoule be &lt;tag&gt; or &lt;tag/&gt;
+	 * Is this tag in xml style (mostly used with is single to tell if the tag shoule be &lt;tag&gt; or &lt;tag/&gt;
 	 * 
 	 * @return if xml style or not
 	 */
 	public boolean isXMLStyle() {
 		return xmlstyle;
 	}
-
+	
 	/**
-	 * Is this tag a hybrid that can be either single or paired: e.g.
-	 * &lt;cftransaction&gt; and &lt;cfinvoke&gt;
+	 * Is this tag a hybrid that can be either single or paired: e.g. &lt;cftransaction&gt; and &lt;cfinvoke&gt;
 	 */
 	public boolean isHybrid() {
 		return hybrid;
 	}
-
+	
 	/**
 	 * Does the tag allow any attribute: e.g. &lt;cfmodule&gt;
 	 */
 	public boolean allowsAnyAttribute() {
 		return anyAttribute;
 	}
-
+	
 	/**
 	 * Is this tag a custom tag
 	 * 
 	 * @return
 	 */
-
+	
 	public boolean isCustomTag() {
 		boolean iscustom = false;
-
-		if (this.name.toLowerCase().startsWith("cf_")
-				|| this.name.toLowerCase().startsWith("cfx_")) {
+		
+		if (this.name.toLowerCase().startsWith("cf_") || this.name.toLowerCase().startsWith("cfx_")) {
 			iscustom = true;
 		}
 		return iscustom;
 	}
-
+	
 	public String toString() {
 		return name;
 	}

@@ -47,13 +47,12 @@ import org.xml.sax.XMLReader;
  * 
  *         Base class for dictionaries.
  * 
- *         The syntax dictionary keeps a name/object map of the tags and
- *         functions defined in the dictionary. It provides the methods for
- *         gaining access to the dictionary's defined functions & tags, plus
- *         access to the attributes that belong to a tag.
+ *         The syntax dictionary keeps a name/object map of the tags and functions defined in the dictionary. It
+ *         provides the methods for gaining access to the dictionary's defined functions & tags, plus access to the
+ *         attributes that belong to a tag.
  * 
- *         I think, in future, the acces to the attributes should be done on an
- *         per-attribute basis, not gained from the syntax dictionary.
+ *         I think, in future, the acces to the attributes should be done on an per-attribute basis, not gained from the
+ *         syntax dictionary.
  * 
  */
 public abstract class SyntaxDictionary {
@@ -63,59 +62,58 @@ public abstract class SyntaxDictionary {
 	protected Map functions;
 	/** any scope variables including user defined components */
 	protected Map scopeVars;
-
+	
 	/** the file name for this dictionary */
 	protected String filename = null;
-
+	
 	/**
 	 * the base url for this dictionary (this will be set on object creation)
 	 */
 	protected URL dictionaryBaseURL;
-
+	
 	public SyntaxDictionary() {
 		syntaxelements = new HashMap();
 		functions = new HashMap();
 		scopeVars = new HashMap();
-
+		
 		try {
 			dictionaryBaseURL = new URL(DictionaryConstants.DICTIONARY_DIR);
-
+			
 		} catch (MalformedURLException e) {
 			e.printStackTrace(System.err);
 		}
 	}
-
+	
 	/**
-	 * loads the xml dictionary "filename" into this object. Note: if this
-	 * dictionary already has tags defined the new items will be added to this
-	 * dictionary (not replaced)
+	 * loads the xml dictionary "filename" into this object. Note: if this dictionary already has tags defined the new
+	 * items will be added to this dictionary (not replaced)
 	 * 
 	 * @param filename
 	 */
 	public void loadDictionary(String filename) {
 		setFilename(filename);
-
+		
 		try {
 			loadDictionary();
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		}
 	}
-
+	
 	public void setFilename(String fname) {
 		this.filename = fname;
 	}
-
+	
 	/**
-	 * get all top level language elements (tags)(in lowercase) these are the
-	 * keys used in the tag HashMap <b>not</b> the tag objects them selves
+	 * get all top level language elements (tags)(in lowercase) these are the keys used in the tag HashMap <b>not</b>
+	 * the tag objects them selves
 	 * 
 	 * @return set of all the tag names using the keys
 	 */
 	public Set getAllElements() {
 		return syntaxelements.keySet();
 	}
-
+	
 	/**
 	 * gets a set that is a copy of all the tags
 	 * 
@@ -131,10 +129,10 @@ public abstract class SyntaxDictionary {
 		while (it.hasNext()) {
 			total.add(syntaxelements.get((String) it.next()));
 		}
-
+		
 		return total;
 	}
-
+	
 	/**
 	 * gets a set of all the function objects in this dictionary
 	 * 
@@ -147,10 +145,10 @@ public abstract class SyntaxDictionary {
 		while (it.hasNext()) {
 			total.add(functions.get((String) it.next()));
 		}
-
+		
 		return total;
 	}
-
+	
 	/**
 	 * gets a set that is a copy of all the scope vars
 	 * 
@@ -166,45 +164,42 @@ public abstract class SyntaxDictionary {
 			// System.out.println("Added " + name);
 			total.add(scopeVars.get(name));
 		}
-
+		
 		return total;
 	}
-
+	
 	/**
 	 * get a set of filtered tags limited by start
 	 * 
 	 * @param start
-	 *            the string to filter by (i.e. "cfou" will return all tags
-	 *            beginning with "cfou"
+	 *            the string to filter by (i.e. "cfou" will return all tags beginning with "cfou"
 	 * @return set of matching elements.
 	 */
 	public Set getFilteredElements(String start) {
-
-		if (this.syntaxelements == DictionaryManager
-				.getDictionary(DictionaryManager.CFDIC)
+		
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
 				&& !start.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionary::getFilteredElements() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
 							+ start + "\'");
 		}
-
+		
 		return limitSet(getAllTags(), start);
 		// return limitSet(getAllElements(),start);
 	}
-
+	
 	/**
 	 * get a set of filtered tags limited by start
 	 * 
 	 * @param start
-	 *            the string to filter by (i.e. "cfou" will return all tags
-	 *            beginning with "cfou"
+	 *            the string to filter by (i.e. "cfou" will return all tags beginning with "cfou"
 	 * @return set of matching elements.
 	 */
 	public Set getFilteredScopeVars(String start) {
 		return limitSet(getAllScopeVars(), start);
 		// return limitSet(getAllElements(),start);
 	}
-
+	
 	/**
 	 * get a set params for the passed function name
 	 * 
@@ -230,9 +225,9 @@ public abstract class SyntaxDictionary {
 			e.printStackTrace();
 		}
 		return null;
-
+		
 	}
-
+	
 	/**
 	 * Get the tag "name" from the dictionary - null if not found
 	 * 
@@ -241,29 +236,25 @@ public abstract class SyntaxDictionary {
 	 * @return the Tag matched, otherwise <code>null</code>
 	 */
 	public Tag getTag(String name) {
-		if (this.syntaxelements == DictionaryManager
-				.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
 				&& !name.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getTag() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
 							+ name + "\'");
 		}
-
+		
 		Object obj = syntaxelements.get(name.toLowerCase());
 		if (obj != null)
 			return (Tag) obj;
-
+		
 		return null;
 	}
-
+	
 	/**
-	 * Gets the parameter values for a procedure (aka tag or function).
-	 * Parameter values could be, for example, ColdFusion boolean value options
-	 * (true/false) for the <code>output</code> attribute for a
-	 * <code>cffunction</code>. * The set of attribute values is based on the
-	 * tag being searched for and the attribute required. The values returned
-	 * will also be filtered by anything contained in the string
-	 * <code>start</code>.
+	 * Gets the parameter values for a procedure (aka tag or function). Parameter values could be, for example,
+	 * ColdFusion boolean value options (true/false) for the <code>output</code> attribute for a <code>cffunction</code>
+	 * . * The set of attribute values is based on the tag being searched for and the attribute required. The values
+	 * returned will also be filtered by anything contained in the string <code>start</code>.
 	 * 
 	 * @param tag
 	 *            - name of tag to search for
@@ -273,31 +264,28 @@ public abstract class SyntaxDictionary {
 	 *            - A partial or full value to filter by
 	 * @return set of filtered attribute values
 	 */
-	public Set getFilteredAttributeValues(String tag, String attribute,
-			String start) {
+	public Set getFilteredAttributeValues(String tag, String attribute, String start) {
 		if (tag == null || attribute == null || start == null) {
-			throw new IllegalArgumentException(
-					"tag, attribute, or start is null");
+			throw new IllegalArgumentException("tag, attribute, or start is null");
 		}
 		// Assert.isNotNull(tag, "Tag supplied is null!");
 		// Assert.isNotNull(attribute, "Attribute supplied is null!");
 		// Assert.isNotNull(start, "Start supplied is null!");
-
-		if (this.syntaxelements == DictionaryManager
-				.getDictionary(DictionaryManager.CFDIC)
+		
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
 				&& !tag.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getFilteredAttributeValues() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
 							+ tag + "\'");
 		}
-
+		
 		Set attribs = getElementAttributes(tag);
-
+		
 		if (attribs == null)
 			return null;
 		else if (attribs.size() == 0)
 			return null;
-
+		
 		Object[] tempArray = attribs.toArray();
 		for (int i = 0; i < tempArray.length; i++) {
 			Parameter currParam = (Parameter) tempArray[i];
@@ -307,7 +295,7 @@ public abstract class SyntaxDictionary {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Gets the attributes for a tag, filtered by start
 	 * 
@@ -323,21 +311,20 @@ public abstract class SyntaxDictionary {
 		}
 		// Assert.isNotNull(tag, "Tag supplied is null!");
 		// Assert.isNotNull(tag, "Supplied start variable is null!");
-
-		if (this.syntaxelements == DictionaryManager
-				.getDictionary(DictionaryManager.CFDIC)
+		
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
 				&& !tag.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getFilteredAttributes() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
 							+ tag + "\'");
 		}
-
+		
 		return limitSet(getElementAttributes(tag), start.toLowerCase());
 	}
-
+	
 	/**
-	 * Gets all the functions in a string Format (lowercase only). In other
-	 * words the keyset of the function map not the function objects
+	 * Gets all the functions in a string Format (lowercase only). In other words the keyset of the function map not the
+	 * function objects
 	 * 
 	 * @param elementname
 	 * @return
@@ -346,7 +333,7 @@ public abstract class SyntaxDictionary {
 		// Assert.isNotNull(functions, "Private member functions is null");
 		return functions.keySet();
 	}
-
+	
 	/**
 	 * retuns a functions usage
 	 * 
@@ -358,7 +345,7 @@ public abstract class SyntaxDictionary {
 		// Assert.isNotNull(functionname, "Functionname parameter is null");
 		return (String) functions.get(functionname.toLowerCase());
 	}
-
+	
 	/**
 	 * retuns a functions help text
 	 * 
@@ -370,14 +357,14 @@ public abstract class SyntaxDictionary {
 		// Assert.isNotNull(functionname, "Functionname parameter is null");
 		String helpText = "";
 		Object o = functions.get(functionname.toLowerCase());
-
+		
 		if (o instanceof Function) {
 			Function f = (Function) o;
 			helpText = f.getHelp().trim();
 		}
 		return helpText;
 	}
-
+	
 	/**
 	 * get a function object by name
 	 * 
@@ -388,10 +375,10 @@ public abstract class SyntaxDictionary {
 		Object obj = functions.get(name.toLowerCase());
 		if (obj != null)
 			return (Function) obj;
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * checks to see if the tag is in the dictionary
 	 * 
@@ -399,20 +386,19 @@ public abstract class SyntaxDictionary {
 	 * @return
 	 */
 	public boolean tagExists(String name) {
-		if (this.syntaxelements == DictionaryManager
-				.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
 				&& !name.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::tagExists() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
 							+ name + "\'");
 		}
-
+		
 		if (syntaxelements == null)
 			return false;
-
+		
 		return syntaxelements.containsKey(name.toLowerCase());
 	}
-
+	
 	/**
 	 * checks to see if the function is in the dictionary
 	 * 
@@ -422,31 +408,29 @@ public abstract class SyntaxDictionary {
 	public boolean functionExists(String name) {
 		if (functions == null)
 			return false;
-
+		
 		return functions.containsKey(name.toLowerCase());
 	}
-
+	
 	/**
-	 * limits a set based on a starting string. The set can either be a set of
-	 * Strings, Tag, Functions, or Parameters
+	 * limits a set based on a starting string. The set can either be a set of Strings, Tag, Functions, or Parameters
 	 * 
 	 * @param st
 	 *            the full set
 	 * @param start
 	 *            the string to use as a limiter
-	 * @return everything in the set that starts with start in the format passed
-	 *         in
+	 * @return everything in the set that starts with start in the format passed in
 	 */
 	public static Set limitSet(Set st, String start) {
 		Set filterset = new HashSet();
 		Set fullset = st;
-
+		
 		if (fullset != null) {
 			Iterator it = fullset.iterator();
 			while (it.hasNext()) {
 				Object item = it.next();
 				String possible = "";
-
+				
 				if (item instanceof String) {
 					possible = (String) item;
 				} else if (item instanceof Tag) {
@@ -464,19 +448,16 @@ public abstract class SyntaxDictionary {
 					ScopeVar val;
 					// Component c;
 					while (i.hasNext()) {
-
+						
 						possible = (String) i.next();
 						// System.out.println("Checking " + possible + ":" +
 						// start);
-						if (possible.toUpperCase().startsWith(
-								start.toUpperCase())) {
+						if (possible.toUpperCase().startsWith(start.toUpperCase())) {
 							val = new ScopeVar(possible);
 							val.setHelp(((Component) item).getHelp());
 							filterset.add(new ScopeVar(possible));
-						} else if ((possible + ".").toUpperCase().equals(
-								start.toUpperCase())) {
-							Iterator j = ((Component) item).getMethods()
-									.iterator();
+						} else if ((possible + ".").toUpperCase().equals(start.toUpperCase())) {
+							Iterator j = ((Component) item).getMethods().iterator();
 							while (j.hasNext()) {
 								filterset.add(j.next());
 							}
@@ -487,14 +468,11 @@ public abstract class SyntaxDictionary {
 					throw new IllegalArgumentException(
 							"The passed set must have only Strings, Procedures, or Parameters");
 				}
-
+				
 				// Strip out unnecessary entries if we are inside a function.
-				if (start.endsWith("(")
-						&& possible.equalsIgnoreCase(start.substring(0, start
-								.length() - 1))) {
+				if (start.endsWith("(") && possible.equalsIgnoreCase(start.substring(0, start.length() - 1))) {
 					filterset.add(item);
-				} else if (possible.toUpperCase().startsWith(
-						start.toUpperCase())) {
+				} else if (possible.toUpperCase().startsWith(start.toUpperCase())) {
 					// System.out.println(possible);
 					filterset.add(item);
 				}
@@ -502,7 +480,7 @@ public abstract class SyntaxDictionary {
 		}
 		return filterset;
 	}
-
+	
 	/**
 	 * Gets the Parameter objects for the passed element name
 	 * 
@@ -515,15 +493,14 @@ public abstract class SyntaxDictionary {
 		// "Private member syntaxelements is null. Has this dictionary been loaded?");
 		// Assert.isNotNull(elementname,
 		// "Parameter elementname supplied is null");
-
-		if (this.syntaxelements == DictionaryManager
-				.getDictionary(DictionaryManager.CFDIC)
+		
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
 				&& !elementname.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getElementAttributes() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
 							+ elementname + "\'");
 		}
-
+		
 		try {
 			Procedure p = null;
 			if (syntaxelements.containsKey(elementname.toLowerCase())) {
@@ -536,10 +513,10 @@ public abstract class SyntaxDictionary {
 		} catch (Throwable ex) {
 			ex.printStackTrace();
 		}
-
+		
 		return null;
 	}
-
+	
 	/**
 	 * Loads and parses an cfeclipse xml dictionary into this dictionary object
 	 * 
@@ -547,47 +524,42 @@ public abstract class SyntaxDictionary {
 	 * @throws SAXException
 	 * @throws ParserConfigurationException
 	 */
-	private void loadDictionary() throws IOException, SAXException,
-			ParserConfigurationException {
+	private void loadDictionary() throws IOException, SAXException, ParserConfigurationException {
 		// System.err.println("loading dictionary: " + filename);
 		if (this.filename == null)
 			throw new IOException("Dictionary file name can not be null!");
-
+		
 		URL url = new URL(dictionaryBaseURL + "/" + this.filename);
 		URLConnection urlcon = url.openConnection();
-		BufferedInputStream xml = new BufferedInputStream(urlcon
-				.getInputStream());
-
+		BufferedInputStream xml = new BufferedInputStream(urlcon.getInputStream());
+		
 		SAXParserFactory factory = SAXParserFactory.newInstance();
 		factory.setNamespaceAware(false);
 		factory.setValidating(false);
 		XMLReader xmlReader = factory.newSAXParser().getXMLReader();
-
+		
 		// setup the content handler and give it the maps for tags and functions
-		xmlReader.setContentHandler(new DictionaryContentHandler(
-				syntaxelements, functions, scopeVars));
-
+		xmlReader.setContentHandler(new DictionaryContentHandler(syntaxelements, functions, scopeVars));
+		
 		InputSource input = new InputSource(xml);
 		// System.err.println("sid: " + url.toString() );
 		input.setSystemId(url.toString());
-
+		
 		xmlReader.parse(input);
 	}
-
+	
 	/**
-	 * Get the base URL for this plug-in. This is used as the offset to load the
-	 * dictionary file
+	 * Get the base URL for this plug-in. This is used as the offset to load the dictionary file
 	 * 
 	 * @return
 	 */
 	public URL getDictionaryBaseURL() {
 		return dictionaryBaseURL;
 	}
-
+	
 	/**
-	 * Set the base URL for this plug-in. This is used as the offset to load the
-	 * dictionary file. The default for this setting is dictionary directory in
-	 * the CFEclipse plugin direcotry
+	 * Set the base URL for this plug-in. This is used as the offset to load the dictionary file. The default for this
+	 * setting is dictionary directory in the CFEclipse plugin direcotry
 	 * 
 	 * @param dictionaryBaseURL
 	 */

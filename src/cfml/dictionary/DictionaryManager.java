@@ -96,7 +96,7 @@ public class DictionaryManager {
 			factory.setIgnoringElementContentWhitespace(true);
 			factory.setCoalescing(true);
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			// TODO: pull this from the jar? begins!
+			// TODO: pull this from the jar?
 			InputStream configurl = DictionaryManager.class.getResourceAsStream("/dictionary/dictionaryconfig.xml");
 			dictionaryConfig = builder.parse(configurl);
 			//URL configurl = DictionaryManager.class.getResource("/dictionary/dictionaryconfig.xml");
