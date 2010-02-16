@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -22,21 +21,17 @@ import cfml.dictionary.DictionaryManager;
 import cfml.dictionary.ISyntaxDictionary;
 
 /**
- * @author Christopher Bradford The dictionary for SQL keywords to be used in
- *         CFQuery tags. Extends CFSyntaxDicionary for now because CF operators
- *         should be color coded. The keywords are loaded from an external file
- *         by calling loadKeywords
+ * @author Christopher Bradford The dictionary for SQL keywords to be used in CFQuery tags. Extends CFSyntaxDicionary
+ *         for now because CF operators should be color coded. The keywords are loaded from an external file by calling
+ *         loadKeywords
  * 
- *         RR - I took this a step further and just made this the default
- *         dictionary for all coldfusion syntax. Instead of using
- *         CFSyntaxDictionary for the document and an instance of
- *         SQLSyntaxDictionary for only the sql partitions, this class is used
- *         for the document and sql partitions now.
+ *         RR - I took this a step further and just made this the default dictionary for all coldfusion syntax. Instead
+ *         of using CFSyntaxDictionary for the document and an instance of SQLSyntaxDictionary for only the sql
+ *         partitions, this class is used for the document and sql partitions now.
  */
-public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
-		ISyntaxDictionary {
+public class SQLSyntaxDictionary extends CFSyntaxDictionary implements ISyntaxDictionary {
 	protected static Set sqlkeywords;
-
+	
 	/**
      * 
      */
@@ -46,7 +41,7 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
 		operators = new HashSet();
 		buildOperatorSyntax();
 	}
-
+	
 	/**
 	 * gets SQL specific keywords (SELECT, FROM etc.);
 	 * 
@@ -55,7 +50,7 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
 	public Set getSQLKeywords() {
 		return sqlkeywords;
 	}
- 
+	
 	/**
 	 * load SQL keywords from the specified file; relative to dictionaryBaseURL
 	 * 
@@ -66,15 +61,14 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
 		try {
 			if (keywordFilename == null)
 				throw new IOException("Keyword file name cannot be null!");
-
-			//URL url = new URL(dictionaryBaseURL + "/" + keywordFilename);
-			//InputStream iStream = url.openStream();
+			
+			// URL url = new URL(dictionaryBaseURL + "/" + keywordFilename);
+			// InputStream iStream = url.openStream();
 			InputStream iStream = DictionaryManager.class.getResourceAsStream("/dictionary/" + keywordFilename);
-			BufferedReader fileReader = new BufferedReader(
-					new InputStreamReader(iStream));
+			BufferedReader fileReader = new BufferedReader(new InputStreamReader(iStream));
 			String line = fileReader.readLine();
 			List keywords = new ArrayList();
-
+			
 			while (line != null) {
 				keywords.add(line.toLowerCase().trim());
 				line = fileReader.readLine();
@@ -84,7 +78,7 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
 			e.printStackTrace();
 		}
 	}
-
+	
 	/**
 	 * build all the SQL keywords
 	 * 
