@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import cfml.dictionary.DictionaryManager;
 import cfml.dictionary.ISyntaxDictionary;
 
 /**
@@ -66,8 +67,9 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements
 			if (keywordFilename == null)
 				throw new IOException("Keyword file name cannot be null!");
 
-			URL url = new URL(dictionaryBaseURL + "/" + keywordFilename);
-			InputStream iStream = url.openStream();
+			//URL url = new URL(dictionaryBaseURL + "/" + keywordFilename);
+			//InputStream iStream = url.openStream();
+			InputStream iStream = DictionaryManager.class.getResourceAsStream("/dictionary/" + keywordFilename);
 			BufferedReader fileReader = new BufferedReader(
 					new InputStreamReader(iStream));
 			String line = fileReader.readLine();

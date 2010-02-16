@@ -25,6 +25,7 @@
 package cfml.dictionary;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public class DictionaryManager {
 	public static final String SQLDIC = DictionaryConstants.SQLDIC;
 	/** the (yet to be made) html dictionary */
 	public static final String HTDIC = DictionaryConstants.HTDIC;
+	public static final String DEFAULT_CFDIC = DictionaryConstants.DEFAULT_CFDIC;
 
 	/** all the dictionaries */
 	private static Map dictionaries = new HashMap();
@@ -77,7 +79,6 @@ public class DictionaryManager {
 	private static Document dictionaryConfig = null;
 
 	private DictionaryManager() {
-		;
 	}
 
 	/**
@@ -95,10 +96,14 @@ public class DictionaryManager {
 			factory.setIgnoringElementContentWhitespace(true);
 			factory.setCoalescing(true);
 			DocumentBuilder builder = factory.newDocumentBuilder();
-
-			URL configurl = new URL(dictionaryConfigURL, "dictionaryconfig.xml");
-
-			dictionaryConfig = builder.parse(configurl.getFile());
+			// TODO: pull this from the jar? begins!
+			InputStream configurl = DictionaryManager.class.getResourceAsStream("/dictionary/dictionaryconfig.xml");
+			dictionaryConfig = builder.parse(configurl);
+			//URL configurl = DictionaryManager.class.getResource("/dictionary/dictionaryconfig.xml");
+			//URL configurl = new URL(dictionaryConfigURL + "/dictionaryconfig.xml");
+			//System.err.println(configurl.getPath());
+			//System.err.println(configurl.getFile().toString());
+			//dictionaryConfig = builder.parse(configurl.getFile());
 		} catch (Exception e) {
 			e.printStackTrace(System.err);
 		}
@@ -146,7 +151,7 @@ public class DictionaryManager {
 	private static String getInitialDictVersion() {
 		// return
 		// propertyManager.getCurrentDictionary(fInput.getFile().getProject());
-		return "cf9.xml";
+		return DEFAULT_CFDIC;
 	}
 
 	/**
@@ -273,7 +278,6 @@ public class DictionaryManager {
 		// grab the cfml dictionary
 		// Node n = dictionaryConfig.getElementById(CFDIC).getFirstChild();
 		Node versionNode = dictionaryConfig.getElementById(versionkey);
-
 		if (versionNode == null) {
 			return null;
 			//			
@@ -405,9 +409,9 @@ public class DictionaryManager {
 	 * @return the dictionary
 	 */
 	public static SyntaxDictionary getDictionary(String key) {
-		// /System.out.println("Getting dictionary " + key);
+//		System.out.println("Getting dictionary " + key);
 		SyntaxDictionary dict = (SyntaxDictionary) dictionaries.get(key);
-		// System.out.println("GOT: " + dict);
+//		System.out.println("GOT: " + dict);
 		return dict;
 	}
 
