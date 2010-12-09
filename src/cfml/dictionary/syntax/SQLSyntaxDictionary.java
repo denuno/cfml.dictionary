@@ -11,13 +11,13 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import cfml.dictionary.DictionaryManager;
 import cfml.dictionary.ISyntaxDictionary;
 
 /**
@@ -57,14 +57,13 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements ISyntaxDi
 	 * @param keywordFilename
 	 *            The file to read from
 	 */
-	public void loadKeywords(String keywordFilename) {
+	public void loadKeywords(URL keywordsURL) {
 		try {
-			if (keywordFilename == null)
+			if (keywordsURL == null)
 				throw new IOException("Keyword file name cannot be null!");
 			
-			// URL url = new URL(dictionaryBaseURL + "/" + keywordFilename);
-			// InputStream iStream = url.openStream();
-			InputStream iStream = DictionaryManager.class.getResourceAsStream("/dictionary/" + keywordFilename);
+			InputStream iStream = keywordsURL.openStream();
+			// InputStream iStream = DictionaryManager.class.getResourceAsStream("dictionary/" + keywordFilename);
 			BufferedReader fileReader = new BufferedReader(new InputStreamReader(iStream));
 			String line = fileReader.readLine();
 			List keywords = new ArrayList();
@@ -75,6 +74,7 @@ public class SQLSyntaxDictionary extends CFSyntaxDictionary implements ISyntaxDi
 			}
 			buildSQLKeywordSyntax(keywords);
 		} catch (IOException e) {
+			System.err.println(keywordsURL);
 			e.printStackTrace();
 		}
 	}

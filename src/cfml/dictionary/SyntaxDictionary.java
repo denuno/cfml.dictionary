@@ -26,7 +26,6 @@ package cfml.dictionary;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -62,26 +61,17 @@ public abstract class SyntaxDictionary {
 	protected Map functions;
 	/** any scope variables including user defined components */
 	protected Map scopeVars;
+	/** any scope variables */
+	protected Map scopes;
 	
 	/** the file name for this dictionary */
-	protected String filename = null;
-	
-	/**
-	 * the base url for this dictionary (this will be set on object creation)
-	 */
-	protected URL dictionaryBaseURL;
+	protected String dictionaryURL = null;
 	
 	public SyntaxDictionary() {
 		syntaxelements = new HashMap();
 		functions = new HashMap();
 		scopeVars = new HashMap();
-		
-		try {
-			dictionaryBaseURL = new URL(DictionaryConstants.DICTIONARY_DIR);
-			
-		} catch (MalformedURLException e) {
-			e.printStackTrace(System.err);
-		}
+		scopes = new HashMap();
 	}
 	
 	/**
@@ -90,8 +80,8 @@ public abstract class SyntaxDictionary {
 	 * 
 	 * @param filename
 	 */
-	public void loadDictionary(String filename) {
-		setFilename(filename);
+	public void loadDictionary(String url) {
+		setURL(url);
 		
 		try {
 			loadDictionary();
@@ -100,8 +90,8 @@ public abstract class SyntaxDictionary {
 		}
 	}
 	
-	public void setFilename(String fname) {
-		this.filename = fname;
+	public void setURL(String url) {
+		this.dictionaryURL = url;
 	}
 	
 	/**
@@ -148,6 +138,27 @@ public abstract class SyntaxDictionary {
 		
 		return total;
 	}
+
+	/**
+	 * gets a set that is a copy of all the scopes
+	 * @return a set of all the scope objects
+	 */
+	public Set getAllScopes()
+	{
+		Set total = new HashSet();
+		Set keys = scopes.keySet();
+		Iterator it = keys.iterator();
+		String name = null;
+		while(it.hasNext())
+		{
+			name = (String)it.next().toString();
+		    //System.out.println("Added " + name);		    
+			total.add(scopes.get(name));
+		}
+		
+		return total;
+	}
+	
 	
 	/**
 	 * gets a set that is a copy of all the scope vars
@@ -177,7 +188,7 @@ public abstract class SyntaxDictionary {
 	 */
 	public Set getFilteredElements(String start) {
 		
-		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !start.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionary::getFilteredElements() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
@@ -236,7 +247,7 @@ public abstract class SyntaxDictionary {
 	 * @return the Tag matched, otherwise <code>null</code>
 	 */
 	public Tag getTag(String name) {
-		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !name.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getTag() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
@@ -272,7 +283,7 @@ public abstract class SyntaxDictionary {
 		// Assert.isNotNull(attribute, "Attribute supplied is null!");
 		// Assert.isNotNull(start, "Start supplied is null!");
 		
-		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !tag.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getFilteredAttributeValues() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
@@ -312,7 +323,7 @@ public abstract class SyntaxDictionary {
 		// Assert.isNotNull(tag, "Tag supplied is null!");
 		// Assert.isNotNull(tag, "Supplied start variable is null!");
 		
-		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !tag.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getFilteredAttributes() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
@@ -386,7 +397,7 @@ public abstract class SyntaxDictionary {
 	 * @return
 	 */
 	public boolean tagExists(String name) {
-		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !name.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::tagExists() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
@@ -494,7 +505,7 @@ public abstract class SyntaxDictionary {
 		// Assert.isNotNull(elementname,
 		// "Parameter elementname supplied is null");
 		
-		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC)
+		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !elementname.toLowerCase().startsWith("cf")) {
 			System.err
 					.println("SyntaxDictionarY::getElementAttributes() - WARNING: Tag name requested that does NOT begin with CF. Tag name was \'"
@@ -526,10 +537,10 @@ public abstract class SyntaxDictionary {
 	 */
 	private void loadDictionary() throws IOException, SAXException, ParserConfigurationException {
 		// System.err.println("loading dictionary: " + filename);
-		if (this.filename == null)
+		if (this.dictionaryURL == null)
 			throw new IOException("Dictionary file name can not be null!");
 		
-		URL url = new URL(dictionaryBaseURL + "/" + this.filename);
+		URL url = new URL(this.dictionaryURL);
 		URLConnection urlcon = url.openConnection();
 		BufferedInputStream xml = new BufferedInputStream(urlcon.getInputStream());
 		
@@ -548,22 +559,4 @@ public abstract class SyntaxDictionary {
 		xmlReader.parse(input);
 	}
 	
-	/**
-	 * Get the base URL for this plug-in. This is used as the offset to load the dictionary file
-	 * 
-	 * @return
-	 */
-	public URL getDictionaryBaseURL() {
-		return dictionaryBaseURL;
-	}
-	
-	/**
-	 * Set the base URL for this plug-in. This is used as the offset to load the dictionary file. The default for this
-	 * setting is dictionary directory in the CFEclipse plugin direcotry
-	 * 
-	 * @param dictionaryBaseURL
-	 */
-	public void setDictionaryBaseURL(URL dictionaryBaseURL) {
-		this.dictionaryBaseURL = dictionaryBaseURL;
-	}
 }

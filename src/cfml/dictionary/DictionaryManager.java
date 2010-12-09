@@ -24,8 +24,8 @@
  */
 package cfml.dictionary;
 
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -42,6 +42,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import cfml.dictionary.preferences.DictionaryPreferenceConstants;
+import cfml.dictionary.preferences.DictionaryPreferences;
 import cfml.dictionary.syntax.CFSyntaxDictionary;
 import cfml.dictionary.syntax.HTMLSyntaxDictionary;
 import cfml.dictionary.syntax.JSSyntaxDictionary;
@@ -54,18 +56,18 @@ import cfml.dictionary.syntax.SQLSyntaxDictionary;
  *         help in abstracting the dictionaries not intended to be instantiated
  */
 public class DictionaryManager {
-	/** the coldfusion dictionaries folder */
-	public static final String DICTIONARY_DIR = DictionaryConstants.DICTIONARY_DIR;
-	/** the coldfusion dictionary */
-	public static final String CFDIC = DictionaryConstants.CFDIC;
-	/** the javascript dictionary */
-	public static final String JSDIC = DictionaryConstants.JSDIC;
-	/** the SQL dictionary */
-	public static final String SQLDIC = DictionaryConstants.SQLDIC;
-	/** the (yet to be made) html dictionary */
-	public static final String HTDIC = DictionaryConstants.HTDIC;
-	public static final String DEFAULT_CFDIC = DictionaryConstants.DEFAULT_CFDIC;
 	
+	/** the coldfusion dictionaries folder */
+	public static String DICTIONARY_DIR = "";
+	public static String CF_DICTIONARY;
+	/** the coldfusion dictionary */
+	public static final String CFDIC_KEY = DictionaryPreferenceConstants.CFDIC_KEY;
+	/** the javascript dictionary */
+	public static final String JSDIC_KEY = DictionaryPreferenceConstants.JSDIC_KEY;
+	/** the SQL dictionary */
+	public static final String SQLDIC_KEY = DictionaryPreferenceConstants.SQLDIC_KEY;
+	/** the (yet to be made) html dictionary */
+	public static final String HTDIC_KEY = DictionaryPreferenceConstants.HTDIC_KEY;
 	/** all the dictionaries */
 	private static Map dictionaries = new HashMap();
 	/** the dictionary cache - for swtiching between grammars */
@@ -76,26 +78,41 @@ public class DictionaryManager {
 	
 	/** the dictionary config file in DOM form */
 	private static Document dictionaryConfig = null;
+	private static DictionaryPreferences fPrefs;
+	private static String fBuiltInDictionaryPath;
 	
-	private DictionaryManager() {
+	private DictionaryManager(DictionaryPreferences prefs) {
+		fPrefs = prefs;
+		init();
+	}
+	
+	static private void init() {
+		fBuiltInDictionaryPath = "jar:file:" + DictionaryManager.class.getResource("/dictionaries.zip").getFile()
+				+ "!/org.cfeclipse.cfml/dictionary/";
+		DICTIONARY_DIR = fPrefs.getDictionaryDir();
+		CF_DICTIONARY = fPrefs.getCFDictionary();
 	}
 	
 	/**
 	 * Loads the dictionary config file. The config file lists all the dictionary files that are available to the system
 	 */
 	private static void loadDictionaryConfig() {
-		URL dictionaryConfigURL = null;
 		try {
-			dictionaryConfigURL = new URL(DICTIONARY_DIR);
-			
+			if (fPrefs == null) {
+				fPrefs = new DictionaryPreferences();
+				init();
+			}
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 			factory.setIgnoringComments(true);
 			factory.setIgnoringElementContentWhitespace(true);
 			factory.setCoalescing(true);
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			// TODO: pull this from the jar? begins!
-			InputStream configurl = DictionaryManager.class.getResourceAsStream("/dictionary/dictionaryconfig.xml");
-			dictionaryConfig = builder.parse(configurl);
+			if (fPrefs.getDictionaryDir().length() != 0) {
+				dictionaryConfig = builder.parse(new File(fPrefs.getDictionaryDir() + "/dictionaryconfig.xml"));
+			} else {
+				URL dc = new URL(fBuiltInDictionaryPath + "dictionaryconfig.xml");
+				dictionaryConfig = builder.parse(dc.openStream());
+			}
 			// URL configurl = DictionaryManager.class.getResource("/dictionary/dictionaryconfig.xml");
 			// URL configurl = new URL(dictionaryConfigURL + "/dictionaryconfig.xml");
 			// System.err.println(configurl.getPath());
@@ -111,23 +128,22 @@ public class DictionaryManager {
 	 */
 	public static void initDictionaries() {
 		
-		String cfdictversion = getInitialDictVersion();
-		
 		// long time = System.currentTimeMillis();
 		// System.out.println("Dictionaries initialized start");
 		
 		// get the dictionary config file into a DOM
 		loadDictionaryConfig();
+		String cfdictversion = getInitialDictVersion();
 		if (dictionaryConfig == null)
 			throw new IllegalArgumentException("Problem loading dictionaryconfig.xml");
 		
 		// load the default dictionaries into the cache
 		// this is kind of weak but it'll do pig... it'll do...
 		if (cfdictversion.trim().length() == 0) {
-			cfdictversion = getFirstVersion(CFDIC);
+			cfdictversion = getFirstVersion(CFDIC_KEY);
 		}
-		String htdictversion = getFirstVersion(HTDIC);
-		String jsdictversion = getFirstVersion(JSDIC);
+		String htdictversion = getFirstVersion(HTDIC_KEY);
+		String jsdictversion = getFirstVersion(JSDIC_KEY);
 		
 		// load the dictionary into the cache
 		loadDictionaryByVersion(cfdictversion);
@@ -135,10 +151,10 @@ public class DictionaryManager {
 		loadDictionaryByVersion(jsdictversion);
 		
 		// load from the cache to the live
-		loadDictionaryFromCache(cfdictversion, CFDIC);
-		loadDictionaryFromCache(cfdictversion, SQLDIC);
-		loadDictionaryFromCache(htdictversion, HTDIC);
-		loadDictionaryFromCache(jsdictversion, JSDIC);
+		loadDictionaryFromCache(cfdictversion, CFDIC_KEY);
+		loadDictionaryFromCache(cfdictversion, SQLDIC_KEY);
+		loadDictionaryFromCache(htdictversion, HTDIC_KEY);
+		loadDictionaryFromCache(jsdictversion, JSDIC_KEY);
 		
 		// System.out.println("Dictionaries initialized in " +
 		// (System.currentTimeMillis() - time) + " ms");
@@ -147,7 +163,7 @@ public class DictionaryManager {
 	private static String getInitialDictVersion() {
 		// return
 		// propertyManager.getCurrentDictionary(fInput.getFile().getProject());
-		return DEFAULT_CFDIC;
+		return CF_DICTIONARY;
 	}
 	
 	/**
@@ -170,7 +186,7 @@ public class DictionaryManager {
 	 * @return {key, label} array
 	 */
 	public static String[][] getConfiguredDictionaries() {
-		NodeList cfmltypes = dictionaryConfig.getElementById(CFDIC).getChildNodes();
+		NodeList cfmltypes = dictionaryConfig.getElementById(CFDIC_KEY).getChildNodes();
 		
 		byte typeslen = (byte) cfmltypes.getLength();
 		
@@ -265,7 +281,7 @@ public class DictionaryManager {
 		Node versionNode = dictionaryConfig.getElementById(versionkey);
 		if (versionNode == null) {
 			return null;
-			//			
+			//
 		}
 		
 		// get the dictype from the parent node
@@ -274,16 +290,24 @@ public class DictionaryManager {
 		// now, make and load the dictionary based on the type
 		SyntaxDictionary dic = null;
 		
-		if (dicttype.equals(CFDIC)) {
-			// load the cfml into the cache
+		if (dicttype.equals(CFDIC_KEY)) {
+			// load the sql keywords into the cache
 			dic = new SQLSyntaxDictionary();
 			// TODO: make this not a hack
-			String sqlwords = dictionaryConfig.getElementById(SQLDIC).getFirstChild().getFirstChild().getAttributes()
-					.getNamedItem("location").getNodeValue();
-			((SQLSyntaxDictionary) dic).loadKeywords(sqlwords);
-		} else if (dicttype.equals(JSDIC)) {
+			String sqlwords = dictionaryConfig.getElementById(SQLDIC_KEY).getFirstChild().getFirstChild()
+					.getAttributes().getNamedItem("location").getNodeValue();
+			if (sqlwords.equals("sqlkeywords.txt")) {
+				sqlwords = fBuiltInDictionaryPath + "sqlkeywords.txt";
+			}
+			try {
+				((SQLSyntaxDictionary) dic).loadKeywords(new URL(sqlwords));
+			} catch (MalformedURLException e) {
+				throw new IllegalArgumentException("Problem loading version node " + sqlwords
+						+ " from dictionaryconfig.xml");
+			}
+		} else if (dicttype.equals(JSDIC_KEY)) {
 			dic = new JSSyntaxDictionary();
-		} else if (dicttype.equals(HTDIC)) {
+		} else if (dicttype.equals(HTDIC_KEY)) {
 			dic = new HTMLSyntaxDictionary();
 		}
 		
@@ -296,6 +320,9 @@ public class DictionaryManager {
 		for (byte z = 0; z < nlen; z++) {
 			n = grammars.item(z);
 			String filename = n.getAttributes().getNamedItem("location").getNodeValue().trim();
+			if (fPrefs.getDictionaryDir().length() == 0) {
+				filename = fBuiltInDictionaryPath + filename;
+			}
 			dic.loadDictionary(filename);
 		}
 		return dic;
