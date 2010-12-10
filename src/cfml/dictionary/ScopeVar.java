@@ -26,52 +26,69 @@ package cfml.dictionary;
 
 /**
  * @author Rob
- * 
- *         This is really just a string wrapper. Its a possible value for an attribute its only here to abstract it a
- *         bit and to give some room to play for future additions
+ *
+ * This is really just a string wrapper. Its a possible value for an attribute
+ * its only here to abstract it a bit and to give some room to play for future 
+ * additions
  */
 public class ScopeVar implements Comparable {
-	protected String value;
+	protected String type;
+	protected String name;
 	protected String help;
-	
-	public ScopeVar(String val) {
-		value = val;
-		this.help = ""; // Must set this to something even if there is no help
+	public ScopeVar(String type, String val)
+	{
+		type = type;
+		name = val;
+		this.help = "";	// Must set this to something even if there is no help
 	}
 	
 	/**
 	 * gets this values value
-	 * 
 	 * @return the value
 	 */
-	public String getValue() {
-		return value.trim();
+	public String getName()
+	{
+		return name.trim();
 	}
 	
-	public void setValue(String newValue) {
-		value = newValue;
+	public void setName(String newValue)
+	{
+		name = newValue;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	public String getHelp() {
-		return help;
+	    return help;
 	}
 	
 	public void setHelp(String help) {
-		this.help = help;
+	    this.help = help;
 	}
 	
-	public String toString() {
-		return value;
+	public String toString()
+	{
+		return name;
 	}
-	
+
 	/**
-	 * Checks to see if the passed object is equal to this value
+	 * Checks to see if the passed object is equal to this
+	 * value
 	 */
-	public boolean equals(Object obj) {
-		if (obj instanceof ScopeVar) {
-			// if the name is the same and the type is the same
-			// assume its the same
-			if (((ScopeVar) obj).getValue().equals(this.value)) {
+	public boolean equals(Object obj)
+	{
+		if(obj instanceof ScopeVar)
+		{
+			//if the name is the same and the type is the same
+			//assume its the same
+			if( ((ScopeVar)obj).getName().equals(this.name))
+			{
 				return true;
 			}
 		}
@@ -82,12 +99,14 @@ public class ScopeVar implements Comparable {
 	/**
 	 * Compares the passed object to this value
 	 */
-	public int compareTo(Object o) {
-		if (o == null)
+	public int compareTo(Object o)
+	{
+		if(o == null)
 			throw new NullPointerException("Null!");
 		
-		if (o instanceof ScopeVar) {
-			return value.compareTo(((ScopeVar) o).getValue());
+		if(o instanceof ScopeVar)
+		{
+			return name.compareTo( ((ScopeVar)o).getName() );
 		}
 		
 		return 0;

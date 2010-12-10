@@ -44,7 +44,6 @@ import org.w3c.dom.NodeList;
 
 import cfml.dictionary.preferences.DictionaryPreferenceConstants;
 import cfml.dictionary.preferences.DictionaryPreferences;
-import cfml.dictionary.syntax.CFSyntaxDictionary;
 import cfml.dictionary.syntax.HTMLSyntaxDictionary;
 import cfml.dictionary.syntax.JSSyntaxDictionary;
 import cfml.dictionary.syntax.SQLSyntaxDictionary;
@@ -110,6 +109,7 @@ public class DictionaryManager {
 			if (fPrefs.getDictionaryDir().length() != 0) {
 				dictionaryConfig = builder.parse(new File(fPrefs.getDictionaryDir() + "/dictionaryconfig.xml"));
 			} else {
+				System.out.println(fBuiltInDictionaryPath);
 				URL dc = new URL(fBuiltInDictionaryPath + "dictionaryconfig.xml");
 				dictionaryConfig = builder.parse(dc.openStream());
 			}
@@ -158,6 +158,15 @@ public class DictionaryManager {
 		
 		// System.out.println("Dictionaries initialized in " +
 		// (System.currentTimeMillis() - time) + " ms");
+	}
+	
+	/**
+	 * Tell the dictionaries to load based on the config file
+	 */
+	public static void initDictionaries(DictionaryPreferences prefs) {
+		fPrefs = prefs;
+		init();
+		initDictionaries();
 	}
 	
 	private static String getInitialDictVersion() {
@@ -255,7 +264,7 @@ public class DictionaryManager {
 				
 				Element grammerElement = (Element) x.selectSingleNode(document);
 				dic = new SQLSyntaxDictionary();
-				((CFSyntaxDictionary) dic).loadDictionary(grammerElement.getAttributeValue("location"));
+				dic.loadDictionary(getDictionaryLocation(grammerElement.getAttributeValue("location")));
 				dictionaryVersionCache.put(versionkey, dic);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block
@@ -296,11 +305,8 @@ public class DictionaryManager {
 			// TODO: make this not a hack
 			String sqlwords = dictionaryConfig.getElementById(SQLDIC_KEY).getFirstChild().getFirstChild()
 					.getAttributes().getNamedItem("location").getNodeValue();
-			if (sqlwords.equals("sqlkeywords.txt")) {
-				sqlwords = fBuiltInDictionaryPath + "sqlkeywords.txt";
-			}
 			try {
-				((SQLSyntaxDictionary) dic).loadKeywords(new URL(sqlwords));
+				((SQLSyntaxDictionary) dic).loadKeywords(new URL(getDictionaryLocation(sqlwords)));
 			} catch (MalformedURLException e) {
 				throw new IllegalArgumentException("Problem loading version node " + sqlwords
 						+ " from dictionaryconfig.xml");
@@ -320,12 +326,23 @@ public class DictionaryManager {
 		for (byte z = 0; z < nlen; z++) {
 			n = grammars.item(z);
 			String filename = n.getAttributes().getNamedItem("location").getNodeValue().trim();
-			if (fPrefs.getDictionaryDir().length() == 0) {
-				filename = fBuiltInDictionaryPath + filename;
-			}
-			dic.loadDictionary(filename);
+			dic.loadDictionary(getDictionaryLocation(filename));
 		}
 		return dic;
+	}
+	
+	private static String getDictionaryLocation(String path) {
+		if (fPrefs.getDictionaryDir().length() == 0) {
+			path = fBuiltInDictionaryPath + path;
+		} else {
+			if (path.startsWith("http")) {
+				// download the file to dictDir
+			} else {
+				File dictDir = new File(fPrefs.getDictionaryDir());
+				path = "file:" + dictDir.getAbsolutePath() + "/" + path;
+			}
+		}
+		return path;
 	}
 	
 	/**

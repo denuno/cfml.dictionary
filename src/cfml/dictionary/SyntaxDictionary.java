@@ -138,27 +138,25 @@ public abstract class SyntaxDictionary {
 		
 		return total;
 	}
-
+	
 	/**
 	 * gets a set that is a copy of all the scopes
+	 * 
 	 * @return a set of all the scope objects
 	 */
-	public Set getAllScopes()
-	{
+	public Set getAllScopes() {
 		Set total = new HashSet();
 		Set keys = scopes.keySet();
 		Iterator it = keys.iterator();
 		String name = null;
-		while(it.hasNext())
-		{
-			name = (String)it.next().toString();
-		    //System.out.println("Added " + name);		    
+		while (it.hasNext()) {
+			name = (String) it.next().toString();
+			// System.out.println("Added " + name);
 			total.add(scopes.get(name));
 		}
 		
 		return total;
 	}
-	
 	
 	/**
 	 * gets a set that is a copy of all the scope vars
@@ -453,7 +451,7 @@ public abstract class SyntaxDictionary {
 				} else if (item instanceof Value) {
 					possible = ((Value) item).getValue();
 				} else if (item instanceof ScopeVar) {
-					possible = ((ScopeVar) item).getValue();
+					possible = ((ScopeVar) item).getName();
 				} else if (item instanceof Component) {
 					Iterator i = ((Component) item).getScopes().iterator();
 					ScopeVar val;
@@ -461,12 +459,11 @@ public abstract class SyntaxDictionary {
 					while (i.hasNext()) {
 						
 						possible = (String) i.next();
-						// System.out.println("Checking " + possible + ":" +
-						// start);
+						// System.out.println("Checking " + possible + ":" + start);
 						if (possible.toUpperCase().startsWith(start.toUpperCase())) {
-							val = new ScopeVar(possible);
+							val = new ScopeVar("componentscope", possible);
 							val.setHelp(((Component) item).getHelp());
-							filterset.add(new ScopeVar(possible));
+							filterset.add(new ScopeVar("componentscope", possible));
 						} else if ((possible + ".").toUpperCase().equals(start.toUpperCase())) {
 							Iterator j = ((Component) item).getMethods().iterator();
 							while (j.hasNext()) {
@@ -502,8 +499,7 @@ public abstract class SyntaxDictionary {
 	public Set getElementAttributes(String elementname) {
 		// Assert.isNotNull(this.syntaxelements,
 		// "Private member syntaxelements is null. Has this dictionary been loaded?");
-		// Assert.isNotNull(elementname,
-		// "Parameter elementname supplied is null");
+		// Assert.isNotNull(elementname, "Parameter elementname supplied is null");
 		
 		if (this.syntaxelements == DictionaryManager.getDictionary(DictionaryManager.CFDIC_KEY)
 				&& !elementname.toLowerCase().startsWith("cf")) {
@@ -550,7 +546,7 @@ public abstract class SyntaxDictionary {
 		XMLReader xmlReader = factory.newSAXParser().getXMLReader();
 		
 		// setup the content handler and give it the maps for tags and functions
-		xmlReader.setContentHandler(new DictionaryContentHandler(syntaxelements, functions, scopeVars));
+		xmlReader.setContentHandler(new DictionaryContentHandler(syntaxelements, functions, scopeVars,scopes));
 		
 		InputSource input = new InputSource(xml);
 		// System.err.println("sid: " + url.toString() );
