@@ -26,6 +26,7 @@ package cfml.dictionary;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -336,6 +337,19 @@ public class DictionaryManager {
 			path = fBuiltInDictionaryPath + path;
 		} else {
 			if (path.startsWith("http")) {
+				File dictFile = new File(fPrefs.getDictionaryDir() + path);
+				if (!dictFile.exists()) {
+					try {
+						URL url = new URL(path);
+						InputStream urlStream = url.openStream();
+						// write out the freaking file
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
 				// download the file to dictDir
 			} else {
 				File dictDir = new File(fPrefs.getDictionaryDir());

@@ -43,6 +43,12 @@
 		</version>
 	</dictionary>
 
+	<dictionary id="REMOTE_DICT">
+		<version key="ecma" label="Remote dictionary for testing">
+			<grammar location="file:///Users/valliant/Projects/java/CFML/cfml.dictionary/test/data/dictionary/js.xml" />
+		</version>
+	</dictionary>
+
 	<!-- note that this will get loaded into the CFML dictionary -->
 	<dictionary id="SQL_DICTIONARY">
 		<version key="mssql" label="Microsoft(R) SQL Server">

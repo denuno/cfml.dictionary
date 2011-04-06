@@ -44,4 +44,24 @@ public class TestDictionaryManager {
 		assertNotNull(fun);
 	}
 	
+	@Test
+	public void testExternalDictionaryLocation() {
+		DictionaryPreferences dprefs = new DictionaryPreferences();
+		dprefs.setDictionaryDir("test/data/dictionary");
+		dprefs.setCFDictionary("awesomedic");
+		DictionaryManager.initDictionaries(dprefs);
+		String[][] fun = DictionaryManager.getConfiguredDictionaries();
+		assertNotNull(fun);
+	}
+	
+	@Test
+	public void testGetDicionaryByURL() {
+		DictionaryPreferences dprefs = new DictionaryPreferences();
+		dprefs.setDictionaryDir("test/data/dictionary");
+		dprefs.setCFDictionary("awesomedic");
+		DictionaryManager.initDictionaries(dprefs);
+		String[][] fun = DictionaryManager.getConfiguredDictionaries();
+		assertNotNull(fun);
+	}
+	
 }
